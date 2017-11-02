@@ -137,7 +137,7 @@ static const struct ATCommand_s ATCommand[] =
     .string = AT_BAND,
     .size_string = sizeof(AT_BAND) - 1,
 #ifndef NO_HELP
-    .help_string = "AT"AT_BAND ": Get or Set the Device address\r\n",
+    .help_string = "AT"AT_BAND ": Get or Set the Regional Band\r\n",
 #endif
     .get = at_Band_get,
     .set = at_Band_set,
