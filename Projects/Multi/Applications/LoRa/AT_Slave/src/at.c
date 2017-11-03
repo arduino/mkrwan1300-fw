@@ -182,12 +182,14 @@ ATEerror_t at_reset(const char *param)
 
 ATEerror_t at_DevEUI_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_8_02x(lora_config_deveui_get());
   return AT_OK;
 }
 
 ATEerror_t at_AppEUI_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_8_02x(lora_config_appeui_get());
   return AT_OK;
 }
@@ -195,13 +197,13 @@ ATEerror_t at_AppEUI_get(const char *param)
 ATEerror_t at_AppEUI_set(const char *param)
 {
   uint8_t AppEui[8];
-  if (tiny_sscanf(param, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+  if (tiny_sscanf(param, "%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx",
                   &AppEui[0], &AppEui[1], &AppEui[2], &AppEui[3],
                   &AppEui[4], &AppEui[5], &AppEui[6], &AppEui[7]) != 8)
   {
     return AT_PARAM_ERROR;
   }
-  
+
   lora_config_appeui_set(AppEui);
   return AT_OK;
 }
@@ -229,12 +231,14 @@ ATEerror_t at_DevAddr_get(const char *param)
   mib.Type = MIB_DEV_ADDR;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_uint32_as_02x(mib.Param.DevAddr);
   return AT_OK;
 }
 
 ATEerror_t at_AppKey_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_16_02x(lora_config_appkey_get());
   return AT_OK;
 }
@@ -242,7 +246,8 @@ ATEerror_t at_AppKey_get(const char *param)
 ATEerror_t at_AppKey_set(const char *param)
 {
   uint8_t AppKey[16];
-  if (sscanf_16_hhx(param, AppKey) != 16)
+  int ret = sscanf_16_hhx(param, AppKey);
+  if (ret != 16)
   {
     return AT_PARAM_ERROR;
   }
@@ -254,6 +259,7 @@ ATEerror_t at_AppKey_set(const char *param)
 extern LoRaMacRegion_t globalRegion;
 ATEerror_t at_Band_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_d(globalRegion);
   return AT_OK;
 }
@@ -280,6 +286,7 @@ ATEerror_t at_NwkSKey_get(const char *param)
   mib.Type = MIB_NWK_SKEY;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_16_02x(mib.Param.NwkSKey);
 
   return AT_OK;
@@ -313,6 +320,7 @@ ATEerror_t at_AppSKey_get(const char *param)
   mib.Type = MIB_APP_SKEY;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_16_02x(mib.Param.AppSKey);
 
   return AT_OK;
@@ -350,6 +358,7 @@ ATEerror_t at_ADR_get(const char *param)
   mib.Type = MIB_ADR;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_d(mib.Param.AdrEnable);
 
   return AT_OK;
@@ -394,9 +403,10 @@ ATEerror_t at_TransmitPower_set(const char *param)
 {
   MibRequestConfirm_t mib;
   LoRaMacStatus_t status;
+  uint8_t ignored;
 
   mib.Type = MIB_CHANNELS_TX_POWER;
-  if (tiny_sscanf(param, "%hhu", &mib.Param.ChannelsTxPower) != 1)
+  if (tiny_sscanf(param, "%hhu,%hhu", &ignored, &mib.Param.ChannelsTxPower) != 1)
   {
     return AT_PARAM_ERROR;
   }
@@ -455,10 +465,11 @@ ATEerror_t at_DutyCycle_set(const char *param)
 
 ATEerror_t at_DutyCycle_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   if (lora_config_duty_cycle_get() == ENABLE)
-    AT_PRINTF("1\r\n");
+    AT_PRINTF("1\r");
   else
-    AT_PRINTF("0\r\n");
+    AT_PRINTF("0\r");
 
   return AT_OK;
 }
@@ -472,6 +483,7 @@ ATEerror_t at_PublicNetwork_get(const char *param)
   mib.Type = MIB_PUBLIC_NETWORK;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_d(mib.Param.EnablePublicNetwork);
 
   return AT_OK;
@@ -683,6 +695,7 @@ ATEerror_t at_JoinAcceptDelay2_set(const char *param)
 
 ATEerror_t at_NetworkJoinMode_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_d((lora_config_otaa_get() == ENABLE ? 1 : 0));
   return AT_OK;
 }
@@ -715,6 +728,7 @@ ATEerror_t at_NetworkID_get(const char *param)
   mib.Type = MIB_NET_ID;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_uint32_as_02x(mib.Param.NetID);
 
   return AT_OK;
@@ -744,6 +758,7 @@ ATEerror_t at_UplinkCounter_get(const char *param)
   mib.Type = MIB_UPLINK_COUNTER;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_u(mib.Param.UpLinkCounter);
 
   return AT_OK;
@@ -773,6 +788,7 @@ ATEerror_t at_DownlinkCounter_get(const char *param)
   mib.Type = MIB_DOWNLINK_COUNTER;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_u(mib.Param.DownLinkCounter);
 
   return AT_OK;
@@ -802,7 +818,7 @@ ATEerror_t at_DeviceClass_get(const char *param)
   mib.Type = MIB_DEVICE_CLASS;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
-  AT_PRINTF("%c\r\n", 'A' + mib.Param.Class);
+  AT_PRINTF("+OK=%c\r", 'A' + mib.Param.Class);
 
   return AT_OK;
 }
@@ -848,6 +864,7 @@ ATEerror_t at_NetworkJoinStatus(const char *param)
 
   if (status == LORAMAC_STATUS_OK)
   {
+	AT_PRINTF("+OK=");
     print_d(mibReq.Param.IsNetworkJoined ? 1 : 0);
     return AT_OK;
   }
@@ -858,7 +875,7 @@ ATEerror_t at_SendBinary(const char *param)
 {
   LoRaMacStatus_t status;
 
-  status = lora_send(param, strlen(param), 1);
+  status = lora_send(param, strlen(param), 1, 0);
   CHECK_STATUS(status);
 
   return AT_OK;
@@ -868,7 +885,7 @@ ATEerror_t at_Send(const char *param)
 {
   LoRaMacStatus_t status;
 
-  status = lora_send(param, strlen(param), 0);
+  status = lora_send(param, strlen(param), 0, 0);
   CHECK_STATUS(status);
 
   return AT_OK;
@@ -877,13 +894,14 @@ ATEerror_t at_Send(const char *param)
 ATEerror_t at_ReceiveBinary(const char *param)
 {
   unsigned i;
-  
-  AT_PRINTF("%d:", ReceivedDataPort);
+
+  AT_PRINTF("+RECV=");
+  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize);
   for (i = 0; i < ReceivedDataSize; i++)
   {
     AT_PRINTF("%02x", ReceivedData[i]);
   }
-  AT_PRINTF("\r\n");
+  AT_PRINTF("\r");
   ReceivedDataSize = 0;
 
   return AT_OK;
@@ -891,20 +909,106 @@ ATEerror_t at_ReceiveBinary(const char *param)
 
 ATEerror_t at_Receive(const char *param)
 {
-  AT_PRINTF("%d:", ReceivedDataPort);
+  AT_PRINTF("+RECV=");
+  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize);
   if (ReceivedDataSize)
   {
     AT_PRINTF("%s", ReceivedData);
     ReceivedDataSize = 0;
   }
-  AT_PRINTF("\r\n");
+  AT_PRINTF("\r");
+
+  return AT_OK;
+}
+
+// Defaults to binary
+#define USE_BINARY 	1
+#define USE_HEX		0
+static uint8_t format_send_v2 = USE_HEX;
+
+ATEerror_t at_SendV2(const char *param)
+{
+  LoRaMacStatus_t status;
+  at_ack_set("0");
+
+  size_t length = 0;
+
+  if (tiny_sscanf(param, "%hhu", &length) != 1)
+  {
+    return AT_PARAM_ERROR;
+  }
+  uint8_t data[64];
+  int i = 0;
+  // grab other #len bytes from the serial buffer
+  while (i<length) {
+	if (IsNewCharReceived() == SET) {
+		data[i] = GetNewChar();
+		i++;
+    }
+  }
+
+  status = lora_send(data, length, format_send_v2, 1);
+  CHECK_STATUS(status);
+
+  return AT_OK;
+}
+
+ATEerror_t at_SendV2Confirmation(const char *param)
+{
+  LoRaMacStatus_t status;
+  at_ack_set("1");
+
+  size_t length = 0;
+
+  if (tiny_sscanf(param, "%hhu", &length) != 1)
+  {
+	return AT_PARAM_ERROR;
+  }
+  uint8_t data[64];
+  int i = 0;
+  // grab other #len bytes from the serial buffer
+  while (i<length) {
+	if (IsNewCharReceived() == SET) {
+		data[i] = GetNewChar();
+		i++;
+    }
+  }
+
+  status = lora_send(data, length, format_send_v2, 1);
+  CHECK_STATUS(status);
+
+  return AT_OK;
+}
+
+ATEerror_t at_Format_get(const char *param)
+{
+  AT_PRINTF("+OK=");
+  print_u(format_send_v2);
+
+  return AT_OK;
+}
+
+ATEerror_t at_Format_set(const char *param)
+{
+  if (tiny_sscanf(param, "%hhu", &format_send_v2) != 1)
+  {
+	return AT_PARAM_ERROR;
+  }
 
   return AT_OK;
 }
 
 ATEerror_t at_version_get(const char *param)
 {
-  AT_PRINTF(AT_VERSION_STRING"\r\n");
+  AT_PRINTF("+OK=");
+  AT_PRINTF(AT_VERSION_STRING"\r");
+  return AT_OK;
+}
+
+ATEerror_t at_device_get(const char *param)
+{
+  AT_PRINTF("+OK=");
+  AT_PRINTF(AT_DEVICE_STRING"\r");
   return AT_OK;
 }
 
@@ -1016,7 +1120,7 @@ static ATEerror_t translate_status(LoRaMacStatus_t status)
 
 static int sscanf_16_hhx(const char *from, uint8_t *pt)
 {
-  return tiny_sscanf(from, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+  return tiny_sscanf(from, "%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx",
                      &pt[0], &pt[1], &pt[2], &pt[3], &pt[4], &pt[5], &pt[6],
                      &pt[7], &pt[8], &pt[9], &pt[10], &pt[11], &pt[12], &pt[13],
                      &pt[14], &pt[15]);
@@ -1024,7 +1128,7 @@ static int sscanf_16_hhx(const char *from, uint8_t *pt)
 
 static void print_16_02x(uint8_t *pt)
 {
-  AT_PRINTF("%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\r\n",
+  AT_PRINTF("%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\r",
             pt[0], pt[1], pt[2], pt[3],
             pt[4], pt[5], pt[6], pt[7],
             pt[8], pt[9], pt[10], pt[11],
@@ -1033,7 +1137,7 @@ static void print_16_02x(uint8_t *pt)
 
 static int sscanf_uint32_as_hhx(const char *from, uint32_t *value)
 {
-  return tiny_sscanf(from, "%hhx:%hhx:%hhx:%hhx",
+  return tiny_sscanf(from, "%02hhx%02hhx%02hhx%02hhx",
                      &((unsigned char *)(value))[0],
                      &((unsigned char *)(value))[1],
                      &((unsigned char *)(value))[2],
@@ -1042,7 +1146,7 @@ static int sscanf_uint32_as_hhx(const char *from, uint32_t *value)
 
 static void print_uint32_as_02x(uint32_t value)
 {
-  AT_PRINTF("%02x:%02x:%02x:%02x\r\n",
+  AT_PRINTF("%02x%02x%02x%02x\r",
             (unsigned)((unsigned char *)(&value))[0],
             (unsigned)((unsigned char *)(&value))[1],
             (unsigned)((unsigned char *)(&value))[2],
@@ -1051,16 +1155,16 @@ static void print_uint32_as_02x(uint32_t value)
 
 static void print_8_02x(uint8_t *pt)
 {
-  AT_PRINTF("%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\r\n",
+  AT_PRINTF("%02x%02x%02x%02x%02x%02x%02x%02x\r",
             pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7]);
 }
 
 static void print_d(int value)
 {
-  AT_PRINTF("%d\r\n", value);
+  AT_PRINTF("%d\r", value);
 }
 
 static void print_u(unsigned int value)
 {
-  AT_PRINTF("%u\r\n", value);
+  AT_PRINTF("%u\r", value);
 }

@@ -188,7 +188,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
   CMD_Init();
-  PRINTF("ATtention command interface\n\r");
+  PRINTF("+EVENT=0,0");
   /* USER CODE END 1 */
 
   /* Configure the Lora Stack*/
@@ -234,6 +234,7 @@ static void LoraTxData(lora_AppData_t *AppData, FunctionalState *IsTxConfirmed)
 static void LoraRxData(lora_AppData_t *AppData)
 {
    set_at_receive(AppData->Port, AppData->Buff, AppData->BuffSize);
+   at_Receive(NULL);
 }
 
 #ifdef  USE_FULL_ASSERT

@@ -648,10 +648,13 @@ LoRaMacStatus_t lora_join(void)
 /**
  *  lora Send raw data or binary data
  */
-LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary)
+LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary, unsigned raw)
 {
   uint32_t appport;
-  
+
+  if (raw == 1) {
+	  goto on_raw;
+  }
   /* read and set the application port */
   if (1 != tiny_sscanf(buf, "%u:", &appport))
   {
@@ -673,6 +676,7 @@ LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary)
   buf ++;
   bufSize --;
   
+on_raw:
   OnSendEvent();
 
   if (DeviceState != DEVICE_STATE_SEND)
@@ -713,7 +717,7 @@ LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary)
     memcpy1(AppData.Buff, (uint8_t *)buf, bufSize);
     AppData.BuffSize = bufSize;
   }
-  
+
   /* set the application port to send to */
   lora_config_application_port_set(appport);
   
@@ -754,10 +758,12 @@ void lora_Init (LoRaMainCallback_t *callbacks, LoRaParam_t* LoRaParam )
   LoRaMainCallbacks->BoardGetUniqueId(lora_config.DevEui);
 #endif
 
+#if 0
   PRINTF("If OTAA enabled\n\r"); 
   PRINTF("DevEui= %02X", lora_config.DevEui[0]) ;for(int i=1; i<8 ; i++) {PRINTF("-%02X", lora_config.DevEui[i]); }; PRINTF("\n\r");
   PRINTF("AppEui= %02X", lora_config.AppEui[0]) ;for(int i=1; i<8 ; i++) {PRINTF("-%02X", lora_config.AppEui[i]); }; PRINTF("\n\r");
   PRINTF("AppKey= %02X", lora_config.AppKey[0]) ;for(int i=1; i<16; i++) {PRINTF(" %02X", lora_config.AppKey[i]); }; PRINTF("\n\n\r");
+#endif
 
 #if (STATIC_DEVICE_ADDRESS != 1)
   // Random seed initialization
@@ -765,11 +771,14 @@ void lora_Init (LoRaMainCallback_t *callbacks, LoRaParam_t* LoRaParam )
   // Choose a random device address
   DevAddr = randr( 0, 0x01FFFFFF );
 #endif
+
+#if 0
   PRINTF("If ABP enabled\n\r"); 
   PRINTF("DevEui= %02X", lora_config.DevEui[0]) ;for(int i=1; i<8 ; i++) {PRINTF("-%02X", lora_config.DevEui[i]); }; PRINTF("\n\r");
   PRINTF("DevAdd=  %08X\n\r", DevAddr) ;
   PRINTF("NwkSKey= %02X", lora_config.NwkSKey[0]) ;for(int i=1; i<16 ; i++) {PRINTF(" %02X", lora_config.NwkSKey[i]); }; PRINTF("\n\r");
   PRINTF("AppSKey= %02X", lora_config.AppSKey[0]) ;for(int i=1; i<16 ; i++) {PRINTF(" %02X", lora_config.AppSKey[i]); }; PRINTF("\n\r");
+#endif
 }
 
 /**
@@ -867,7 +876,7 @@ void lora_fsm( LoRaMacRegion_t region )
     }
     case DEVICE_STATE_JOINED:
     {
-      PRINTF("JOINED\n\r");
+      PRINTF("+EVENT=1,1\r");
       DeviceState = DEVICE_STATE_SLEEP;
       break;
     }

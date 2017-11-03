@@ -114,7 +114,7 @@ void vcom_Init(void)
   UARTX_CLK_ENABLE();
   vcom_IoInit();
 
-  LPUART_InitStruct.BaudRate = 9600;
+  LPUART_InitStruct.BaudRate = 19200;
   LPUART_InitStruct.DataWidth = LL_LPUART_DATAWIDTH_8B;
   LPUART_InitStruct.StopBits = LL_LPUART_STOPBITS_1;
   LPUART_InitStruct.Parity = LL_LPUART_PARITY_NONE;

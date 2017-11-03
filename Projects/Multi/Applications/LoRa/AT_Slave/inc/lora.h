@@ -245,7 +245,7 @@ LoRaMacStatus_t lora_join(void);
  * @param [IN] binary Whether buffer contains raw data or a string of hexadecimal values (ie binary data)
  * @retval LoRa status
  */
-LoRaMacStatus_t lora_send(const char *buf, unsigned size, unsigned binary);
+LoRaMacStatus_t lora_send(const char *buf, unsigned size, unsigned binary, unsigned raw);
 
 /**
  * @brief Lora Initialisation
