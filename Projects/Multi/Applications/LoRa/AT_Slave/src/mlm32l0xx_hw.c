@@ -310,7 +310,7 @@ void HW_GpioInit(void)
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   /* All GPIOs except debug pins (SWCLK and SWD) */
-  HW_GPIO_Init(GPIOA, GPIO_PIN_All & (~(GPIO_PIN_13 | GPIO_PIN_14)), &GPIO_InitStruct);
+  HW_GPIO_Init(GPIOA, GPIO_PIN_All, &GPIO_InitStruct);
 
   /* All GPIOs */
   HW_GPIO_Init(GPIOB, GPIO_PIN_All, &GPIO_InitStruct);
@@ -529,6 +529,7 @@ static void HW_IoDeInit(void)
   HW_GPIO_Init(RADIO_NSS_PORT, RADIO_NSS_PIN, &initStruct);
 
   Radio.IoDeInit();
+  HW_SPI_IoDeInit();
   //vcom_IoDeInit();
 }
 

@@ -260,7 +260,7 @@ int main(void)
   HW_Init();
 
   /* Configure Debug mode */
-  DBG_Init();
+  //DBG_Init();
 
   /* USER CODE BEGIN 1 */
   CMD_Init();
