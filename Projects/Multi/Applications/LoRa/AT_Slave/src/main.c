@@ -254,6 +254,7 @@ int main(void)
   }
 
   HW_GPIO_DeInit( GPIOB, GPIO_PIN_12);
+  HW_GpioInit();
 
   /* Configure the hardware*/
   HW_Init();
