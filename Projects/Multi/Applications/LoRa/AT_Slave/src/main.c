@@ -252,6 +252,9 @@ int main(void)
         runPassthrough();
 	}
   }
+
+  HW_GPIO_DeInit( GPIOB, GPIO_PIN_12);
+
   /* Configure the hardware*/
   HW_Init();
 
