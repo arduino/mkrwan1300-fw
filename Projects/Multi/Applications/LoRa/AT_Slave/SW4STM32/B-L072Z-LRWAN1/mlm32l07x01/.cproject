@@ -53,9 +53,9 @@
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1830469217" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="STM32L072xx"/>
-									<listOptionValue builtIn="false" value=" USE_B_L072Z_LRWAN1"/>
-									<listOptionValue builtIn="false" value=" USE_FULL_LL_DRIVER"/>
-									<listOptionValue builtIn="false" value=" REGION_EU868"/>
+									<listOptionValue builtIn="false" value="USE_B_L072Z_LRWAN1"/>
+									<listOptionValue builtIn="false" value="USE_FULL_LL_DRIVER"/>
+									<listOptionValue builtIn="false" value="REGION_EU868"/>
 									<listOptionValue builtIn="false" value="REGION_AS923"/>
 									<listOptionValue builtIn="false" value="REGION_AU915"/>
 									<listOptionValue builtIn="false" value="REGION_CN470"/>
