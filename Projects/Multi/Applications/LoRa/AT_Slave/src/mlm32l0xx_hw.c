@@ -352,6 +352,9 @@ uint32_t HW_GetRandomSeed(void)
 
 void HW_GetUniqueId(uint8_t *id)
 {
+  // First 3 bytes are Arduino OUI A8-61-0A
+  // Other 5 bytes are derived by STM32 internal ID registers
+
   uint32_t id1 = *((uint32_t *)ID1);
   uint32_t id2 = *((uint32_t *)ID2);
   uint32_t id3 = *((uint32_t *)ID3);
@@ -359,12 +362,12 @@ void HW_GetUniqueId(uint8_t *id)
 
   id[7] = id13 >> 24;
   id[6] = id13 >> 16;
-  id[5] = id13 >> 8;
-  id[4] = id13;
-  id[3] = id2 >> 24;
-  id[2] = id2 >> 16;
-  id[1] = id2 >> 8;
-  id[0] = id2;
+  id[5] = id3 & 0xFF;
+  id[4] = id2 & 0xFF;
+  id[3] = id1 & 0xFF;
+  id[2] = 0x0A;
+  id[1] = 0x61;
+  id[0] = 0xA8;
 }
 
 uint8_t HW_GetBatteryLevel(void)
