@@ -210,29 +210,34 @@ ATEerror_t at_AppEUI_set(const char *param)
 
 ATEerror_t at_DevAddr_set(const char *param)
 {
-  MibRequestConfirm_t mib;
-  LoRaMacStatus_t status;
+	uint32_t DevAddr;
+	sscanf_uint32_as_hhx(param, &DevAddr);
 
-  mib.Type = MIB_DEV_ADDR;
-  if (sscanf_uint32_as_hhx(param, &mib.Param.DevAddr) != 4)
-  {
-    return AT_PARAM_ERROR;
-  }
-  status = LoRaMacMibSetRequestConfirm(&mib);
-  CHECK_STATUS(status);
-  return AT_OK;
+	lora_config_devaddr_set(DevAddr);
+	return AT_OK;
 }
 
 ATEerror_t at_DevAddr_get(const char *param)
 {
-  MibRequestConfirm_t mib;
-  LoRaMacStatus_t status;
 
-  mib.Type = MIB_DEV_ADDR;
-  status = LoRaMacMibGetRequestConfirm(&mib);
-  CHECK_STATUS(status);
   AT_PRINTF("+OK=");
-  print_uint32_as_02x(mib.Param.DevAddr);
+  print_uint32_as_02x(lora_config_devaddr_get());
+  return AT_OK;
+}
+
+ATEerror_t at_NetworkID_get(const char *param)
+{
+  AT_PRINTF("+OK=");
+  print_uint32_as_02x(lora_config_networkid_get());
+  return AT_OK;
+}
+
+ATEerror_t at_NetworkID_set(const char *param)
+{
+  uint32_t NetworkID;
+  sscanf_uint32_as_hhx(param, &NetworkID);
+
+  lora_config_networkid_set(NetworkID);
   return AT_OK;
 }
 
@@ -280,67 +285,41 @@ ATEerror_t at_Band_set(const char *param)
 
 ATEerror_t at_NwkSKey_get(const char *param)
 {
-  MibRequestConfirm_t mib;
-  LoRaMacStatus_t status;
-
-  mib.Type = MIB_NWK_SKEY;
-  status = LoRaMacMibGetRequestConfirm(&mib);
-  CHECK_STATUS(status);
   AT_PRINTF("+OK=");
-  print_16_02x(mib.Param.NwkSKey);
-
+  print_16_02x(lora_config_nwkskey_get());
   return AT_OK;
 }
 
 ATEerror_t at_NwkSKey_set(const char *param)
 {
-  MibRequestConfirm_t mib;
-  LoRaMacStatus_t status;
-  uint8_t NwkSKey[16];
-
-  mib.Type = MIB_NWK_SKEY;
-
-  if (sscanf_16_hhx(param, NwkSKey) != 16)
+  uint8_t NwkSkey[16];
+  int ret = sscanf_16_hhx(param, NwkSkey);
+  if (ret != 16)
   {
     return AT_PARAM_ERROR;
   }
 
-  mib.Param.NwkSKey = NwkSKey;
-  status = LoRaMacMibSetRequestConfirm(&mib);
-  CHECK_STATUS(status);
-
+  lora_config_nwkskey_set(NwkSkey);
   return AT_OK;
 }
 
 ATEerror_t at_AppSKey_get(const char *param)
 {
-  MibRequestConfirm_t mib;
-  LoRaMacStatus_t status;
-
-  mib.Type = MIB_APP_SKEY;
-  status = LoRaMacMibGetRequestConfirm(&mib);
-  CHECK_STATUS(status);
   AT_PRINTF("+OK=");
-  print_16_02x(mib.Param.AppSKey);
-
+  print_16_02x(lora_config_appskey_get());
   return AT_OK;
 }
 
 ATEerror_t at_AppSKey_set(const char *param)
 {
-  MibRequestConfirm_t mib;
-  LoRaMacStatus_t status;
   uint8_t AppSKey[16];
-
-  mib.Type = MIB_APP_SKEY;
-  if (sscanf_16_hhx(param, AppSKey) != 16)
+  int ret = sscanf_16_hhx(param, AppSKey);
+  if (ret != 16)
   {
     return AT_PARAM_ERROR;
   }
-  mib.Param.AppSKey = AppSKey;
-  status = LoRaMacMibSetRequestConfirm(&mib);
-  CHECK_STATUS(status);
 
+  lora_config_appskey_set(AppSKey);
   return AT_OK;
 }
 
@@ -717,36 +696,6 @@ ATEerror_t at_NetworkJoinMode_set(const char *param)
   }
 
   lora_config_otaa_set(status);
-  return AT_OK;
-}
-
-ATEerror_t at_NetworkID_get(const char *param)
-{
-  MibRequestConfirm_t mib;
-  LoRaMacStatus_t status;
-
-  mib.Type = MIB_NET_ID;
-  status = LoRaMacMibGetRequestConfirm(&mib);
-  CHECK_STATUS(status);
-  AT_PRINTF("+OK=");
-  print_uint32_as_02x(mib.Param.NetID);
-
-  return AT_OK;
-}
-
-ATEerror_t at_NetworkID_set(const char *param)
-{
-  MibRequestConfirm_t mib;
-  LoRaMacStatus_t status;
-
-  mib.Type = MIB_NET_ID;
-  if (sscanf_uint32_as_hhx(param, &mib.Param.NetID) != 4)
-  {
-    return AT_PARAM_ERROR;
-  }
-  status = LoRaMacMibSetRequestConfirm(&mib);
-  CHECK_STATUS(status);
-
   return AT_OK;
 }
 
@@ -1138,19 +1087,19 @@ static void print_16_02x(uint8_t *pt)
 static int sscanf_uint32_as_hhx(const char *from, uint32_t *value)
 {
   return tiny_sscanf(from, "%02hhx%02hhx%02hhx%02hhx",
-                     &((unsigned char *)(value))[0],
-                     &((unsigned char *)(value))[1],
+                     &((unsigned char *)(value))[3],
                      &((unsigned char *)(value))[2],
-                     &((unsigned char *)(value))[3]);
+                     &((unsigned char *)(value))[1],
+                     &((unsigned char *)(value))[0]);
 }
 
 static void print_uint32_as_02x(uint32_t value)
 {
   AT_PRINTF("%02x%02x%02x%02x\r",
-            (unsigned)((unsigned char *)(&value))[0],
-            (unsigned)((unsigned char *)(&value))[1],
+            (unsigned)((unsigned char *)(&value))[3],
             (unsigned)((unsigned char *)(&value))[2],
-            (unsigned)((unsigned char *)(&value))[3]);
+            (unsigned)((unsigned char *)(&value))[1],
+            (unsigned)((unsigned char *)(&value))[0]);
 }
 
 static void print_8_02x(uint8_t *pt)

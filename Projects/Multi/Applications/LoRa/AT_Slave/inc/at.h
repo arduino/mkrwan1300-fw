@@ -100,7 +100,7 @@ typedef enum eATEerror
 #define AT_JN1DL      "+JN1DL"
 #define AT_JN2DL      "+JN2DL"
 #define AT_NJM        "+MODE"
-#define AT_NWKID      "+NWKID"
+#define AT_NWKID      "+IDNWK"
 #define AT_FCU        "+FCU"
 #define AT_FCD        "+FCD"
 #define AT_CLASS      "+CLASS"
