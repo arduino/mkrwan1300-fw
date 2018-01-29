@@ -331,7 +331,6 @@ static const struct ATCommand_s ATCommand[] =
     .run = at_return_error,
   },
 
-#ifndef NO_KEY_ADDR_EUI
   {
     .string = AT_NWKID,
     .size_string = sizeof(AT_NWKID) - 1,
@@ -342,7 +341,6 @@ static const struct ATCommand_s ATCommand[] =
     .set = at_NetworkID_set,
     .run = at_return_error,
   },
-#endif
   
   {
     .string = AT_FCU,

@@ -72,6 +72,8 @@ static lora_configuration_t lora_config =
   .DevEui = LORAWAN_DEVICE_EUI,
   .AppEui = LORAWAN_APPLICATION_EUI,
   .AppKey = LORAWAN_APPLICATION_KEY,
+  .NetworkID = LORAWAN_NETWORK_ID,
+  .DevAddr = LORAWAN_DEVICE_ADDRESS,
   .NwkSKey = LORAWAN_NWKSKEY,
   .AppSKey = LORAWAN_APPSKEY,
   .Rssi = 0,
@@ -851,11 +853,11 @@ void lora_fsm( LoRaMacRegion_t region )
       else
       {
         mibReq.Type = MIB_NET_ID;
-        mibReq.Param.NetID = LORAWAN_NETWORK_ID;
+        mibReq.Param.NetID = lora_config.NetworkID;
         LoRaMacMibSetRequestConfirm( &mibReq );
 
         mibReq.Type = MIB_DEV_ADDR;
-        mibReq.Param.DevAddr = DevAddr;
+        mibReq.Param.DevAddr = lora_config.DevAddr;
         LoRaMacMibSetRequestConfirm( &mibReq );
 
         mibReq.Type = MIB_NWK_SKEY;
@@ -871,7 +873,7 @@ void lora_fsm( LoRaMacRegion_t region )
         LoRaMacMibSetRequestConfirm( &mibReq );
       }
       
-      DeviceState = DEVICE_STATE_SLEEP;
+      DeviceState = DEVICE_STATE_JOINED;
       break;
     }
     case DEVICE_STATE_JOINED:
@@ -959,6 +961,46 @@ uint8_t *lora_config_appeui_get(void)
 void lora_config_appeui_set(uint8_t appeui[8])
 {
   memcpy1(lora_config.AppEui, appeui, sizeof(lora_config.AppEui));
+}
+
+uint32_t lora_config_devaddr_get(void)
+{
+  return lora_config.DevAddr;
+}
+
+void lora_config_devaddr_set(uint32_t devaddr)
+{
+  lora_config.DevAddr= devaddr;
+}
+
+void lora_config_networkid_set(uint32_t networkid)
+{
+  lora_config.NetworkID = networkid;
+}
+
+uint32_t lora_config_networkid_get(void)
+{
+  return lora_config.NetworkID;
+}
+
+uint8_t *lora_config_nwkskey_get(void)
+{
+  return lora_config.NwkSKey;
+}
+
+void lora_config_nwkskey_set(uint8_t nwkSKey[16])
+{
+  memcpy1(lora_config.NwkSKey, nwkSKey, sizeof(lora_config.NwkSKey));
+}
+
+uint8_t *lora_config_appskey_get(void)
+{
+  return lora_config.AppSKey;
+}
+
+void lora_config_appskey_set(uint8_t appskey[16])
+{
+  memcpy1(lora_config.AppSKey, appskey, sizeof(lora_config.AppSKey));
 }
 
 uint8_t *lora_config_appkey_get(void)

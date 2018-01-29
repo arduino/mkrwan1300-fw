@@ -86,6 +86,8 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
    uint8_t DevEui[8];           /*< Device EUI */
    uint8_t AppEui[8];           /*< Application EUI */
    uint8_t AppKey[16];          /*< Application Key */
+   uint32_t NetworkID;          /*< Network ID */
+   uint32_t DevAddr;            /*< Device Address */
    uint8_t NwkSKey[16];         /*< Network Session Key */
    uint8_t AppSKey[16];         /*< Application Session Key */
    int16_t Rssi;                /*< Rssi of the received packet */
