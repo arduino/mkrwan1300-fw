@@ -929,6 +929,27 @@ ATEerror_t at_SendV2Confirmation(const char *param)
   return AT_OK;
 }
 
+ATEerror_t at_Port_get(const char *param)
+{
+  AT_PRINTF("+OK=");
+  print_u(lora_config_application_port_get());
+
+  return AT_OK;
+}
+
+ATEerror_t at_Port_set(const char *param)
+{
+  uint8_t application_port;
+  if (tiny_sscanf(param, "%hhu", &application_port) != 1)
+  {
+	return AT_PARAM_ERROR;
+  }
+  /* set the application port to send to */
+  lora_config_application_port_set(application_port);
+
+  return AT_OK;
+}
+
 ATEerror_t at_Format_get(const char *param)
 {
   AT_PRINTF("+OK=");

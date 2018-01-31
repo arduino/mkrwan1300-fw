@@ -664,6 +664,9 @@ LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary, un
     return LORAMAC_STATUS_PARAMETER_INVALID;
   }
   
+  /* set the application port to send to */
+  lora_config_application_port_set(appport);
+
   /* skip the application port */
   while (('0' <= buf[0]) && (buf[0] <= '9'))
   {
@@ -720,9 +723,6 @@ on_raw:
     AppData.BuffSize = bufSize;
   }
 
-  /* set the application port to send to */
-  lora_config_application_port_set(appport);
-  
   if( NextTx == true )
   {
     PrepareTxFrame( );

@@ -112,6 +112,7 @@ typedef enum eATEerror
 #define AT_RECV       "+RECV"
 #define AT_UTX		  "+UTX"
 #define AT_CTX		  "+CTX"
+#define AT_PORT       "+PORT"
 #define AT_VER        "+VER"
 #define AT_DEV        "+DEV"
 #define AT_CFM        "+CFM"
@@ -530,6 +531,20 @@ ATEerror_t at_Format_get(const char *param);
  * @retval AT_OK if OK, or an appropriate AT_xxx error code
  */
 ATEerror_t at_Format_set(const char *param);
+
+/**
+ * @brief  Get application port in use
+ * @param  String parameter
+ * @retval AT_OK if OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_Port_get(const char *param);
+
+/**
+ * @brief  Set application port
+ * @param  String parameter
+ * @retval AT_OK if OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_Port_set(const char *param);
 
 /**
  * @brief  Print last received data in binary format with hexadecimal value

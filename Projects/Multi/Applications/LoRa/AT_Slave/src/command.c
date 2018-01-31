@@ -442,6 +442,17 @@ static const struct ATCommand_s ATCommand[] =
   },
 
   {
+	.string = AT_PORT,
+	.size_string = sizeof(AT_PORT) - 1,
+#ifndef NO_HELP
+	.help_string = "AT"AT_PORT ": set application port\r\n",
+#endif
+	.get = at_Port_get,
+	.set = at_Port_set,
+	.run = at_return_error,
+  },
+
+  {
     .string = AT_CTX,
     .size_string = sizeof(AT_CTX) - 1,
 #ifndef NO_HELP
