@@ -849,6 +849,7 @@ void lora_fsm( LoRaMacRegion_t region )
             LoRaMacMlmeRequest( &mlmeReq );
             NextTx = false;
         }
+        DeviceState = DEVICE_STATE_SLEEP;
       }
       else
       {
@@ -871,9 +872,10 @@ void lora_fsm( LoRaMacRegion_t region )
         mibReq.Type = MIB_NETWORK_JOINED;
         mibReq.Param.IsNetworkJoined = true;
         LoRaMacMibSetRequestConfirm( &mibReq );
+
+        DeviceState = DEVICE_STATE_JOINED;
       }
-      
-      DeviceState = DEVICE_STATE_JOINED;
+
       break;
     }
     case DEVICE_STATE_JOINED:
