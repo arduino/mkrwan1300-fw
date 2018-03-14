@@ -192,7 +192,7 @@ void setupPassthrough() {
 	HW_GPIO_Init( GPIOB, GPIO_PIN_13, &initStruct );
 	HW_GPIO_Init( GPIOA, GPIO_PIN_3, &initStruct );
 	HW_GPIO_Init( GPIOA, GPIO_PIN_6, &initStruct );
-	HW_GPIO_Init( GPIOB, GPIO_PIN_4, &initStruct );
+	HW_GPIO_Init( GPIOB, GPIO_PIN_12, &initStruct );
 
 	// output pins
 	initStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -204,7 +204,7 @@ void setupPassthrough() {
 #ifdef USE_DIO0_IRQ
 	HW_GPIO_Init( GPIOB, GPIO_PIN_12, &initStruct );
 #endif
-	HW_GPIO_Init( GPIOB, GPIO_PIN_15, &initStruct );
+	HW_GPIO_Init( GPIOA, GPIO_PIN_15, &initStruct );
 
 	// reset and SS pins
 	SX1276Reset();
@@ -214,26 +214,23 @@ void setupPassthrough() {
 #endif
 }
 
-static inline void runPassthrough() {
+static __attribute__((optimize("O3"))) void runPassthrough() {
 	// PB13 -> PB3
-	// PA3 -> PA7
-	// PA6 -> PA2
-	// PB4 -> PB12
+	// PA3  -> PA7
+	// PA6  -> PA2
+	// PB12 -> PA15
 
-#define PORTA_OUT_MASK ((1 << 2) | (1 << 7) | (1 << 15))
+	while (1) {
+		uint32_t InPortB = READ_REG(GPIOB->IDR);
+		uint32_t InPortA = READ_REG(GPIOA->IDR);
 
-	uint32_t InPortA = READ_REG(GPIOA->IDR);
-	uint32_t InPortB = READ_REG(GPIOB->IDR);
+		uint32_t OutPortA = ((InPortA & GPIO_PIN_3) << 4) | ((InPortA & GPIO_PIN_6) >> 4) | ((InPortB & GPIO_PIN_12) << 3);
+		uint32_t OutPortB = ((InPortB & GPIO_PIN_13) >> 10);
 
-	uint32_t OutPortB = (((InPortB & GPIO_PIN_13) >> 10));
-	uint32_t OutPortA = ((InPortA & GPIO_PIN_3) << 4) | ((InPortA & GPIO_PIN_6) >> 4) | ((InPortB & GPIO_PIN_12) << 3);
-
-	WRITE_REG(GPIOA->BSRR, ((OutPortA & PORTA_OUT_MASK) | ((~OutPortA & PORTA_OUT_MASK) << 16)));
-	WRITE_REG(GPIOB->BSRR, ((OutPortB & (1 << 3)) | (((~OutPortB & (1 << 3)) << 16))));
-	return;
+		WRITE_REG(GPIOA->ODR, OutPortA);
+		WRITE_REG(GPIOB->ODR, OutPortB);
+	}
 }
-
-
 
 LoRaMacRegion_t globalRegion = LORAMAC_REGION_EU868;
 
@@ -248,9 +245,11 @@ int main(void)
   /* Read SS input (GPIOPB12); if low, enter dumb mode */
   if (goDumb()) {
     setupPassthrough();
-	  while (1) {
-        runPassthrough();
-	}
+
+    DISABLE_IRQ();
+
+    runPassthrough(); // does not return
+    while (1);
   }
 
   HW_GPIO_DeInit( GPIOB, GPIO_PIN_12);
