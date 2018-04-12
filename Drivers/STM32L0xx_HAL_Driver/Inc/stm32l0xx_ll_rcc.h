@@ -550,6 +550,7 @@ typedef struct
 /** @defgroup RCC_LL_EC_PLL_DIV PLL division factor
   * @{
   */
+
 #define LL_RCC_PLL_DIV_2                   RCC_CFGR_PLLDIV2 /*!< PLL clock output = PLLVCO / 2 */
 #define LL_RCC_PLL_DIV_3                   RCC_CFGR_PLLDIV3 /*!< PLL clock output = PLLVCO / 3 */
 #define LL_RCC_PLL_DIV_4                   RCC_CFGR_PLLDIV4 /*!< PLL clock output = PLLVCO / 4 */
