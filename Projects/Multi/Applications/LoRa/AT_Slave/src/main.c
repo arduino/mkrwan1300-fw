@@ -66,7 +66,7 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
 #include "version.h"
 #include "command.h"
 #include "at.h"
-#include "lora.h"
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -87,7 +87,7 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
  * Number of trials for the join request.
  */
 #define JOINREQ_NBTRIALS                            3
-
+#define PORTA_OUT_MASK ((1 << 2) | (1 << 7) | (1 << 15))
 /* Private macro -------------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 
@@ -96,6 +96,7 @@ static void LoraTxData(lora_AppData_t *AppData, FunctionalState *IsTxConfirmed);
 
 /* call back when LoRa has received a frame*/
 static void LoraRxData(lora_AppData_t *AppData);
+
 
 /* Private variables ---------------------------------------------------------*/
 /* load call backs*/
@@ -192,11 +193,13 @@ void setupPassthrough() {
 	HW_GPIO_Init( GPIOB, GPIO_PIN_13, &initStruct );
 	HW_GPIO_Init( GPIOA, GPIO_PIN_3, &initStruct );
 	HW_GPIO_Init( GPIOA, GPIO_PIN_6, &initStruct );
-	HW_GPIO_Init( GPIOB, GPIO_PIN_4, &initStruct );
+	//HW_GPIO_Init( GPIOB, GPIO_PIN_4, &initStruct );
+	HW_GPIO_Init( GPIOB, GPIO_PIN_12, &initStruct );
 
 	// output pins
 	initStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	initStruct.Pull = GPIO_NOPULL;
+	initStruct.Speed = GPIO_SPEED_HIGH;
 
 	HW_GPIO_Init( GPIOB, GPIO_PIN_3, &initStruct );
 	HW_GPIO_Init( GPIOA, GPIO_PIN_7, &initStruct );
@@ -214,23 +217,26 @@ void setupPassthrough() {
 #endif
 }
 
-static inline void runPassthrough() {
+static  void runPassthrough() {
 	// PB13 -> PB3
 	// PA3 -> PA7
 	// PA6 -> PA2
-	// PB4 -> PB12
+	// PB12 -> PA15
+	uint32_t InPortA,InPortB;//,OutPortB,OutPortA;
+	while(1){
 
-#define PORTA_OUT_MASK ((1 << 2) | (1 << 7) | (1 << 15))
+		InPortA = READ_REG(GPIOA->IDR);
+		InPortB = READ_REG(GPIOB->IDR);
+		WRITE_REG(GPIOA->ODR, (((InPortA & GPIO_PIN_3) << 4) | ((InPortA & GPIO_PIN_6) >> 4) | ((InPortB & GPIO_PIN_12) << 3)));
+		WRITE_REG(GPIOB->ODR, ((InPortB & GPIO_PIN_13) >> 10));
 
-	uint32_t InPortA = READ_REG(GPIOA->IDR);
-	uint32_t InPortB = READ_REG(GPIOB->IDR);
+		//OutPortB = (((InPortB & GPIO_PIN_13) >> 10));
+		//OutPortA = ((InPortA & GPIO_PIN_3) << 4) | ((InPortA & GPIO_PIN_6) >> 4) | ((InPortB & GPIO_PIN_12) << 3);
 
-	uint32_t OutPortB = (((InPortB & GPIO_PIN_13) >> 10));
-	uint32_t OutPortA = ((InPortA & GPIO_PIN_3) << 4) | ((InPortA & GPIO_PIN_6) >> 4) | ((InPortB & GPIO_PIN_12) << 3);
+		//WRITE_REG(GPIOA->BSRR, ((OutPortA & PORTA_OUT_MASK) | ((~OutPortA & PORTA_OUT_MASK) << 16)));
+		//WRITE_REG(GPIOB->BSRR, ((OutPortB & (1 << 3)) | (((~OutPortB & (1 << 3)) << 16))));
+	}
 
-	WRITE_REG(GPIOA->BSRR, ((OutPortA & PORTA_OUT_MASK) | ((~OutPortA & PORTA_OUT_MASK) << 16)));
-	WRITE_REG(GPIOB->BSRR, ((OutPortB & (1 << 3)) | (((~OutPortB & (1 << 3)) << 16))));
-	return;
 }
 
 
@@ -248,9 +254,10 @@ int main(void)
   /* Read SS input (GPIOPB12); if low, enter dumb mode */
   if (goDumb()) {
     setupPassthrough();
-	  while (1) {
-        runPassthrough();
-	}
+	  //while (1) {
+    DISABLE_IRQ();
+    runPassthrough();
+	//}
   }
 
   HW_GPIO_DeInit( GPIOB, GPIO_PIN_12);
@@ -288,7 +295,7 @@ int main(void)
      * and cortex will not enter low power anyway
      * don't go in low power mode if we just received a char
      */
-    if ((lora_getDeviceState() == DEVICE_STATE_SLEEP) && (IsNewCharReceived() == RESET))
+    if ((lora_getDeviceState() == DEVICE_STATE_SLEEP) && (IsNewCharReceived() == 0))
     {
 #ifndef LOW_POWER_DISABLE
       LowPower_Handler();
