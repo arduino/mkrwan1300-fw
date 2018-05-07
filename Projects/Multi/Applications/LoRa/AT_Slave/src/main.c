@@ -218,21 +218,46 @@ static inline void runPassthrough() {
 	// PB13 -> PB3
 	// PA3 -> PA7
 	// PA6 -> PA2
-	// PB4 -> PB12
+	// PB12 -> PB15
 
-#define PORTA_OUT_MASK ((1 << 2) | (1 << 7) | (1 << 15))
+	asm volatile (
+		"LDR R0, =0x50000014\n\t"	//GPIOA_BSRR
+		"LDR R1, =0x50000414\n\t"	//GPIOB_BSRR
+		"LDR R2, =0x50000010\n\t"	//GPIOA_IDR
+		"LDR R3, =0x50000410\n\t"	//GPIOB_IDR
 
-	uint32_t InPortA = READ_REG(GPIOA->IDR);
-	uint32_t InPortB = READ_REG(GPIOB->IDR);
+		"MOV R6, #1\n\t"
+		"dumb:\n\t"
 
-	uint32_t OutPortB = (((InPortB & GPIO_PIN_13) >> 10));
-	uint32_t OutPortA = ((InPortA & GPIO_PIN_3) << 4) | ((InPortA & GPIO_PIN_6) >> 4) | ((InPortB & GPIO_PIN_12) << 3);
+		"LDR R7, [R3]\n\t"
 
-	WRITE_REG(GPIOA->BSRR, ((OutPortA & PORTA_OUT_MASK) | ((~OutPortA & PORTA_OUT_MASK) << 16)));
-	WRITE_REG(GPIOB->BSRR, ((OutPortB & (1 << 3)) | (((~OutPortB & (1 << 3)) << 16))));
-	return;
+		//"LSR R4, R7, #13\n\t"
+		//"AND R4, R4, R6\n\t"
+		//"LSL R4, R4, #3\n\t"
+		"LSR R4, R7, #10\n\t"
+		"STR R4, [R1]\n\t"
+
+		"LSR R4, R7, #12\n\t"
+		"AND R4, R4, R6\n\t"
+		"LSL R5, R4, #15\n\t"
+
+		"LDR R7, [R2]\n\t"
+
+		"LSR R4, R7, #3\n\t"
+		"AND R4, R4, R6\n\t"
+		"LSL R4, R4, #7\n\t"
+		"ORR R5, R5, R4\n\t"
+
+		"LSR R4, R7, #6\n\t"
+		"AND R4, R4, R6\n\t"
+		"LSL R4, R4, #2\n\t"
+		"ORR R5, R5, R4\n\t"
+
+		"STR R5, [R0]\n\t"
+
+		"B dumb\n\t"
+	);
 }
-
 
 
 LoRaMacRegion_t globalRegion = LORAMAC_REGION_EU868;
