@@ -220,7 +220,7 @@ static inline void runPassthrough() {
 	// PA6 -> PA2
 	// PB12 -> PB15
 
-	asm volatile (
+	__asm__ volatile (
 		"LDR R0, =0x50000014\n\t"	//GPIOA_BSRR
 		"LDR R1, =0x50000414\n\t"	//GPIOB_BSRR
 		"LDR R2, =0x50000010\n\t"	//GPIOA_IDR
