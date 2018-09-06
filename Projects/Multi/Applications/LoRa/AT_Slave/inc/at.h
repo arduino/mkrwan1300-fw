@@ -80,6 +80,7 @@ typedef enum eATEerror
 
 /* AT Command strings. Commands start with AT */
 #define AT_RESET      "Z"
+#define AT_BAND       "+BAND"
 #define AT_DEUI       "+DEUI"
 #define AT_DADDR      "+DADDR"
 #define AT_APPKEY     "+APPKEY"
@@ -174,6 +175,20 @@ ATEerror_t at_AppEUI_get(const char *param);
  * @retval AT_OK if OK, or an appropriate AT_xxx error code
  */
 ATEerror_t at_AppEUI_set(const char *param);
+
+/**
+ * @brief  Print RF Band in use
+ * @param  Param string of the AT command
+ * @retval AT_OK if OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_Band_get(const char *param);
+
+/**
+ * @brief  Set RF Band in use
+ * @param  Param string of the AT command
+ * @retval AT_OK if OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_Band_set(const char *param);
 
 /**
  * @brief  Set DevAddr

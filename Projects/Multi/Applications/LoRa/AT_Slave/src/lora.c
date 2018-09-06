@@ -68,11 +68,7 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
 static lora_configuration_t lora_config = 
 {
   .otaa = ((OVER_THE_AIR_ACTIVATION == 0) ? DISABLE : ENABLE),
-#if defined( REGION_EU868 )
-  .duty_cycle = ENABLE,
-#else
   .duty_cycle = DISABLE,
-#endif
   .DevEui = LORAWAN_DEVICE_EUI,
   .AppEui = LORAWAN_APPLICATION_EUI,
   .AppKey = LORAWAN_APPLICATION_KEY,
@@ -222,6 +218,10 @@ static void PrepareTxFrame( )
     {
         LoRaMainCallbacks->LoraTxData(&AppData, &IsTxConfirmed);
     }
+}
+
+void TriggerReinit() {
+	DeviceState = DEVICE_STATE_INIT ;
 }
 
 /*!
@@ -425,9 +425,9 @@ static void McpsIndication( McpsIndication_t *mcpsIndication )
                     mibReq.Param.AdrEnable = true;
                     LoRaMacMibSetRequestConfirm( &mibReq );
 
-#if defined( REGION_EU868 )
-                    LoRaMacTestSetDutyCycleOn( false );
-#endif
+                    if (mcpsIndication->Region == LORAMAC_REGION_EU868) {
+                    	LoRaMacTestSetDutyCycleOn( false );
+                    }
                 }
             }
             else
@@ -443,9 +443,7 @@ static void McpsIndication( McpsIndication_t *mcpsIndication )
                     mibReq.Type = MIB_ADR;
                     mibReq.Param.AdrEnable = LoRaParamInit->AdrEnable;
                     LoRaMacMibSetRequestConfirm( &mibReq );
-#if defined( REGION_EU868 )
-                lora_config_duty_cycle_set(LORAWAN_DUTYCYCLE_ON ? ENABLE : DISABLE);
-#endif
+                    lora_config_duty_cycle_set((mcpsIndication->Region == LORAMAC_REGION_EU868) ? ENABLE : DISABLE);
                     break;
                 case 1: // (iii, iv)
                     AppData.BuffSize = 2;
@@ -487,9 +485,7 @@ static void McpsIndication( McpsIndication_t *mcpsIndication )
                         mibReq.Type = MIB_ADR;
                         mibReq.Param.AdrEnable = LoRaParamInit->AdrEnable;
                         LoRaMacMibSetRequestConfirm( &mibReq );
-#if defined( REGION_EU868 )
-                        lora_config_duty_cycle_set(LORAWAN_DUTYCYCLE_ON ? ENABLE : DISABLE);
-#endif
+                        lora_config_duty_cycle_set((mcpsIndication->Region == LORAMAC_REGION_EU868) ? ENABLE : DISABLE);
 
                         mlmeReq.Type = MLME_JOIN;
 
@@ -780,7 +776,7 @@ void lora_Init (LoRaMainCallback_t *callbacks, LoRaParam_t* LoRaParam )
  *  lora class A state machine
  */
 
-void lora_fsm( void)
+void lora_fsm( LoRaMacRegion_t region )
 {
   switch( DeviceState )
   {
@@ -790,29 +786,7 @@ void lora_fsm( void)
         LoRaMacPrimitives.MacMcpsIndication = McpsIndication;
         LoRaMacPrimitives.MacMlmeConfirm = MlmeConfirm;
         LoRaMacCallbacks.GetBatteryLevel = LoRaMainCallbacks->BoardGetBatteryLevel;
-#if defined( REGION_AS923 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_AS923 );
-#elif defined( REGION_AU915 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_AU915 );
-#elif defined( REGION_CN470 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_CN470 );
-#elif defined( REGION_CN779 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_CN779 );
-#elif defined( REGION_EU433 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_EU433 );
-#elif defined( REGION_IN865 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_IN865 );
-#elif defined( REGION_EU868 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_EU868 );
-#elif defined( REGION_KR920 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_KR920 );
-#elif defined( REGION_US915 )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_US915 );
-#elif defined( REGION_US915_HYBRID )
-                LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_US915_HYBRID );
-#else
-    #error "Please define a region in the compiler options."
-#endif
+        LoRaMacInitialization( &LoRaMacPrimitives, &LoRaMacCallbacks, region );
 
         TimerInit( &TxNextPacketTimer, OnTxNextPacketTimerEvent );
         
@@ -828,8 +802,8 @@ void lora_fsm( void)
         mibReq.Param.Class= LoRaParamInit->Class;
         LoRaMacMibSetRequestConfirm( &mibReq );
 
-#if defined( REGION_EU868 )
-                lora_config_duty_cycle_set(LORAWAN_DUTYCYCLE_ON ? ENABLE : DISABLE);
+        lora_config_duty_cycle_set((region == LORAMAC_REGION_EU868) ? ENABLE : DISABLE);
+
 
 #if( USE_SEMTECH_DEFAULT_CHANNEL_LINEUP == 1 ) 
                 LoRaMacChannelAdd( 3, ( ChannelParams_t )LC4 );
@@ -844,7 +818,6 @@ void lora_fsm( void)
                 LoRaMacMibSetRequestConfirm( &mibReq );
 #endif
 
-#endif
       DeviceState = DEVICE_STATE_SLEEP;
       break;
     }

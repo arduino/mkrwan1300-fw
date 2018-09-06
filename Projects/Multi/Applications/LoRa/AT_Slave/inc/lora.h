@@ -260,7 +260,14 @@ void lora_Init (LoRaMainCallback_t *callbacks, LoRaParam_t* LoRaParamInit );
  * @param [IN] none
  * @retval none
  */
-void lora_fsm( void );
+void lora_fsm( LoRaMacRegion_t region );
+
+/**
+ * @brief triggers a reinit when band gets changed
+ * @param none
+ * @retval none
+ */
+void TriggerReinit();
 
 /**
  * @brief functionl requesting loRa state machine to send data 

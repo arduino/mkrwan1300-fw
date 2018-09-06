@@ -143,6 +143,53 @@ typedef enum eDeviceClass
 }DeviceClass_t;
 
 /*!
+ * LoRaMAC region enumeration
+ */
+typedef enum eLoRaMacRegion_t
+{
+    /*!
+     * AS band on 923MHz
+     */
+    LORAMAC_REGION_AS923,
+    /*!
+     * Australian band on 915MHz
+     */
+    LORAMAC_REGION_AU915,
+    /*!
+     * Chinese band on 470MHz
+     */
+    LORAMAC_REGION_CN470,
+    /*!
+     * Chinese band on 779MHz
+     */
+    LORAMAC_REGION_CN779,
+    /*!
+     * European band on 433MHz
+     */
+    LORAMAC_REGION_EU433,
+    /*!
+     * European band on 868MHz
+     */
+    LORAMAC_REGION_EU868,
+    /*!
+     * South korean band on 920MHz
+     */
+    LORAMAC_REGION_KR920,
+    /*!
+     * India band on 865MHz
+     */
+    LORAMAC_REGION_IN865,
+    /*!
+     * North american band on 915MHz
+     */
+    LORAMAC_REGION_US915,
+    /*!
+     * North american band on 915MHz with a maximum of 16 channels
+     */
+    LORAMAC_REGION_US915_HYBRID,
+}LoRaMacRegion_t;
+
+/*!
  * LoRaMAC channels parameters definition
  */
 typedef union uDrRange
@@ -939,6 +986,10 @@ typedef struct sMcpsIndication
      * The downlink counter value for the received frame
      */
     uint32_t DownLinkCounter;
+    /*!
+    * The region currently in use
+    */
+    LoRaMacRegion_t Region;
 }McpsIndication_t;
 
 /*!
@@ -1609,53 +1660,6 @@ typedef enum eLoRaMacStatus
      */
     LORAMAC_STATUS_REGION_NOT_SUPPORTED
 }LoRaMacStatus_t;
-
-/*!
- * LoRaMAC region enumeration
- */
-typedef enum eLoRaMacRegion_t
-{
-    /*!
-     * AS band on 923MHz
-     */
-    LORAMAC_REGION_AS923,
-    /*!
-     * Australian band on 915MHz
-     */
-    LORAMAC_REGION_AU915,
-    /*!
-     * Chinese band on 470MHz
-     */
-    LORAMAC_REGION_CN470,
-    /*!
-     * Chinese band on 779MHz
-     */
-    LORAMAC_REGION_CN779,
-    /*!
-     * European band on 433MHz
-     */
-    LORAMAC_REGION_EU433,
-    /*!
-     * European band on 868MHz
-     */
-    LORAMAC_REGION_EU868,
-    /*!
-     * South korean band on 920MHz
-     */
-    LORAMAC_REGION_KR920,
-    /*!
-     * India band on 865MHz
-     */
-    LORAMAC_REGION_IN865,
-    /*!
-     * North american band on 915MHz
-     */
-    LORAMAC_REGION_US915,
-    /*!
-     * North american band on 915MHz with a maximum of 16 channels
-     */
-    LORAMAC_REGION_US915_HYBRID,
-}LoRaMacRegion_t;
 
 /*!
  * LoRaMAC events structure

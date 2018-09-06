@@ -170,6 +170,8 @@ void HW_Main_Init()
   HW_GpioInit();
 }
 
+LoRaMacRegion_t globalRegion = LORAMAC_REGION_EU868;
+
 int main(void)
 {
   /* STM32 HAL library initialization*/
@@ -196,7 +198,7 @@ int main(void)
   while (1)
   {
     /* run the LoRa class A state machine*/
-    lora_fsm();
+    lora_fsm(globalRegion);
 
     /* Handle UART commands */
     CMD_Process();

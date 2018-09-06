@@ -2319,6 +2319,7 @@ LoRaMacStatus_t LoRaMacInitialization( LoRaMacPrimitives_t *primitives, LoRaMacC
     LoRaMacPrimitives = primitives;
     LoRaMacCallbacks = callbacks;
     LoRaMacRegion = region;
+    McpsIndication.Region = region;
 
     LoRaMacFlags.Value = 0;
 
