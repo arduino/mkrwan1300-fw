@@ -967,7 +967,17 @@ void lora_config_appeui_set(uint8_t appeui[8])
 
 uint32_t lora_config_devaddr_get(void)
 {
-  return lora_config.DevAddr;
+	MibRequestConfirm_t mibReq;
+	LoRaMacStatus_t status;
+
+	mibReq.Type = MIB_DEV_ADDR;
+	status = LoRaMacMibGetRequestConfirm( &mibReq );
+
+	if( status == LORAMAC_STATUS_OK )
+	{
+		lora_config.DevAddr = mibReq.Param.DevAddr;
+	}
+	return lora_config.DevAddr;
 }
 
 void lora_config_devaddr_set(uint32_t devaddr)
@@ -987,6 +997,16 @@ uint32_t lora_config_networkid_get(void)
 
 uint8_t *lora_config_nwkskey_get(void)
 {
+	MibRequestConfirm_t mibReq;
+	LoRaMacStatus_t status;
+
+	mibReq.Type = MIB_NWK_SKEY;
+	status = LoRaMacMibGetRequestConfirm( &mibReq );
+
+	if( status == LORAMAC_STATUS_OK )
+	{
+		memcpy1(lora_config.NwkSKey, mibReq.Param.NwkSKey, sizeof(lora_config.NwkSKey));
+	}
   return lora_config.NwkSKey;
 }
 
@@ -997,6 +1017,16 @@ void lora_config_nwkskey_set(uint8_t nwkSKey[16])
 
 uint8_t *lora_config_appskey_get(void)
 {
+	MibRequestConfirm_t mibReq;
+	LoRaMacStatus_t status;
+
+	mibReq.Type = MIB_APP_SKEY;
+	status = LoRaMacMibGetRequestConfirm( &mibReq );
+
+	if( status == LORAMAC_STATUS_OK )
+	{
+		memcpy1(lora_config.AppSKey, mibReq.Param.AppSKey, sizeof(lora_config.AppSKey));
+	}
   return lora_config.AppSKey;
 }
 
