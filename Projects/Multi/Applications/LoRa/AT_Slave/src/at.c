@@ -373,6 +373,7 @@ ATEerror_t at_TransmitPower_get(const char *param)
   mib.Type = MIB_CHANNELS_TX_POWER;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_d(mib.Param.ChannelsTxPower);
 
   return AT_OK;
@@ -404,6 +405,7 @@ ATEerror_t at_DataRate_get(const char *param)
 
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_d(mib.Param.ChannelsDatarate);
 
   return AT_OK;
@@ -497,6 +499,7 @@ ATEerror_t at_Rx2Frequency_get(const char *param)
   mib.Type = MIB_RX2_CHANNEL;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_d(mib.Param.Rx2Channel.Frequency);
 
   return AT_OK;
@@ -530,6 +533,7 @@ ATEerror_t at_Rx2DataRate_get(const char *param)
   mib.Type = MIB_RX2_CHANNEL;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_d(mib.Param.Rx2Channel.Datarate);
 
   return AT_OK;
@@ -564,6 +568,7 @@ ATEerror_t at_Rx1Delay_get(const char *param)
   mib.Type = MIB_RECEIVE_DELAY_1;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_u(mib.Param.ReceiveDelay1);
 
   return AT_OK;
@@ -622,6 +627,7 @@ ATEerror_t at_JoinAcceptDelay1_get(const char *param)
   mib.Type = MIB_JOIN_ACCEPT_DELAY_1;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_u(mib.Param.JoinAcceptDelay1);
 
   return AT_OK;
@@ -651,6 +657,7 @@ ATEerror_t at_JoinAcceptDelay2_get(const char *param)
   mib.Type = MIB_JOIN_ACCEPT_DELAY_2;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_u(mib.Param.JoinAcceptDelay2);
 
   return AT_OK;
