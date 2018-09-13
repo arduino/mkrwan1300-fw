@@ -10,7 +10,7 @@
 # (at your option) any later version.
 #
 
-NAME = main
+NAME ?= mlm32l07x01
 
 CROSS_COMPILE = arm-none-eabi-
 CC = $(CROSS_COMPILE)gcc
@@ -133,16 +133,16 @@ endif
 
 .PHONY:		all clean
 
-all:		$(NAME)_text.bin $(NAME)_text.hex
+all:		$(NAME).bin $(NAME).hex
 
 $(NAME).elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS)
 	$(SIZE) $@
 
-%_text.bin: %.elf
+%.bin: %.elf
 	$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
 
-%_text.hex: %.elf
+%.hex: %.elf
 	$(BUILD) $(OBJCOPY) -j .text -j .data -O ihex $< $@
 
 # ----- Cleanup ---------------------------------------------------------------
@@ -179,8 +179,8 @@ MKDEP =									\
 
 .PHONY: load boot
 
-load: $(NAME)_text.hex
-	$(FLASH) $(FLASHFLAGS) write $(NAME)_text.hex
+load: $(NAME).hex
+	$(FLASH) $(FLASHFLAGS) write $(NAME).hex
 
-boot: $(NAME)_text.bin
-	$(BOOTLOADER) $(BOOTLOADER_FLAGS) -D $(NAME)_text.bin
+boot: $(NAME).bin
+	$(BOOTLOADER) $(BOOTLOADER_FLAGS) -D $(NAME).bin
