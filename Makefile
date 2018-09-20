@@ -24,13 +24,9 @@ BOOTLOADER_FLAGS = -a 0 -s 0x08000000:leave
 
 LINKER_SCRIPT = Projects/Multi/Applications/LoRa/AT_Slave/SW4STM32/B-L072Z-LRWAN1/mlm32l07x01/STM32L072CZYx_FLASH.ld
 
-CFLAGS  = -g -Os -Wall -Wextra -Wno-unused-parameter \
-	  -mcpu=cortex-m0plus -mthumb \
-	  -std=c99 -ffunction-sections -fdata-sections -march=armv6-m -mthumb -mabi=aapcs -mfloat-abi=soft
-LDFLAGS = \
-	  -Wl,--gc-sections,--no-undefined \
-	  -T$(LINKER_SCRIPT) --specs=nosys.specs \
-	  -lm -lc -lgcc
+CFLAGS  = -mcpu=cortex-m0plus -mthumb -mfloat-abi=soft -Os
+
+LDFLAGS = -mcpu=cortex-m0plus -mthumb -mfloat-abi=soft -specs=nosys.specs -specs=nano.specs -T$(LINKER_SCRIPT) -lm
 
 DEFINES = \
 	  -DSTM32L072xx \
