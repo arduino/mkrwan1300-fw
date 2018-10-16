@@ -853,6 +853,7 @@ ATEerror_t at_ReceiveBinary(const char *param)
 
   AT_PRINTF("+RECV=");
   AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize);
+
   for (i = 0; i < ReceivedDataSize; i++)
   {
     AT_PRINTF("%02x", ReceivedData[i]);
@@ -863,24 +864,37 @@ ATEerror_t at_ReceiveBinary(const char *param)
   return AT_OK;
 }
 
-ATEerror_t at_Receive(const char *param)
-{
-  AT_PRINTF("+RECV=");
-  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize);
-  if (ReceivedDataSize)
-  {
-    AT_PRINTF("%s", ReceivedData);
-    ReceivedDataSize = 0;
-  }
-  AT_PRINTF("\r");
-
-  return AT_OK;
-}
-
 // Defaults to binary
 #define USE_BINARY 	1
 #define USE_HEX		0
 static uint8_t format_send_v2 = USE_HEX;
+
+ATEerror_t at_Receive(const char *param)
+{
+
+  AT_PRINTF("+RECV=");
+
+  if (format_send_v2==0)
+  {
+	  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize);
+	  if (ReceivedDataSize)
+	  {
+		AT_PRINTF("%s", ReceivedData);
+	  }
+  }
+  else
+  {
+	  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize*2);
+	  for (unsigned i = 0; i < ReceivedDataSize; i++)
+	  {
+	    AT_PRINTF("%02x", ReceivedData[i]);
+	  }
+  }
+  ReceivedDataSize = 0;
+  AT_PRINTF("\r");
+
+  return AT_OK;
+}
 
 ATEerror_t at_SendV2(const char *param)
 {
