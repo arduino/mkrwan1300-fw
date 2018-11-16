@@ -877,9 +877,9 @@ ATEerror_t at_Receive(const char *param)
   if (format_send_v2==0)
   {
 	  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize);
-	  if (ReceivedDataSize)
+	  for (unsigned i = 0; i < ReceivedDataSize; i++)
 	  {
-		AT_PRINTF("%s", ReceivedData);
+		AT_PRINTF("%c", ReceivedData[i]);
 	  }
   }
   else
