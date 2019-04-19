@@ -236,6 +236,8 @@ static inline void runPassthrough() {
 		//"AND R4, R4, R6\n\t"
 		//"LSL R4, R4, #3\n\t"
 		"LSR R4, R7, #10\n\t"
+		// set TCXO pin to 1 forcefully (PB6)
+		"ADD R4, R4, #64\n\t"
 		"STR R4, [R1]\n\t"
 
 		"LSR R4, R7, #12\n\t"
