@@ -201,24 +201,25 @@ void setupPassthrough() {
 	HW_GPIO_Init( GPIOB, GPIO_PIN_3, &initStruct );
 	HW_GPIO_Init( GPIOA, GPIO_PIN_7, &initStruct );
 	HW_GPIO_Init( GPIOA, GPIO_PIN_2, &initStruct );
-#ifdef USE_DIO0_IRQ
-	HW_GPIO_Init( GPIOB, GPIO_PIN_12, &initStruct );
-#endif
-	HW_GPIO_Init( GPIOB, GPIO_PIN_15, &initStruct );
+	HW_GPIO_Init( GPIOA, GPIO_PIN_15, &initStruct );
+	HW_GPIO_Init( GPIOA, GPIO_PIN_4, &initStruct );
+
+	// enable TCXO
+	initStruct.Pull = GPIO_PULLUP;
+	HW_GPIO_Init( RADIO_TCXO_VCC_PORT, RADIO_TCXO_VCC_PIN, &initStruct );
+	HW_GPIO_Write(RADIO_TCXO_VCC_PORT, RADIO_TCXO_VCC_PIN, 1);
 
 	// reset and SS pins
 	SX1276Reset();
 	HW_GPIO_Init( RADIO_NSS_PORT, RADIO_NSS_PIN, &initStruct );
-#ifdef USE_DIO0_IRQ
-	HW_GPIO_Write( RADIO_NSS_PORT, RADIO_NSS_PIN, 0 );
-#endif
 }
 
 static inline void runPassthrough() {
 	// PB13 -> PB3
 	// PA3 -> PA7
 	// PA6 -> PA2
-	// PB12 -> PB15
+	// PB12 -> PA15
+	// PB4 -> PA4
 
 	__asm__ volatile (
 		"LDR R0, =0x50000014\n\t"	//GPIOA_BSRR
@@ -235,11 +236,18 @@ static inline void runPassthrough() {
 		//"AND R4, R4, R6\n\t"
 		//"LSL R4, R4, #3\n\t"
 		"LSR R4, R7, #10\n\t"
+		// set TCXO pin to 1 forcefully (PB6)
+		"ADD R4, R4, #64\n\t"
 		"STR R4, [R1]\n\t"
 
 		"LSR R4, R7, #12\n\t"
 		"AND R4, R4, R6\n\t"
 		"LSL R5, R4, #15\n\t"
+
+		"LSR R4, R7, #4\n\t"
+		"AND R4, R4, R6\n\t"
+		"LSL R4, R4, #4\n\t"
+		"ORR R5, R5, R4\n\t"
 
 		"LDR R7, [R2]\n\t"
 
