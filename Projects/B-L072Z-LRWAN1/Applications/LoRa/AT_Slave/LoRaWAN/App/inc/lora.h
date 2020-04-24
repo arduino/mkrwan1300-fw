@@ -222,7 +222,7 @@ typedef struct sLoRaMainCallback
  * @param [IN] application parmaters
  * @retval none
  */
-void LORA_Init(LoRaMainCallback_t *callbacks, LoRaParam_t *LoRaParam);
+void LORA_Init(LoRaMainCallback_t *callbacks, LoRaParam_t *LoRaParam, LoRaMacRegion_t region);
 
 /**
  * @brief run Lora classA state Machine
@@ -387,6 +387,13 @@ int8_t lora_config_tx_datarate_get(void);
  * @retval LoRaMac region
  */
 LoRaMacRegion_t lora_region_get(void);
+
+/**
+ * @brief triggers a reinit when band gets changed
+ * @param none
+ * @retval none
+ */
+void TriggerReinit( LoRaMacRegion_t region );
 
 #ifdef __cplusplus
 }

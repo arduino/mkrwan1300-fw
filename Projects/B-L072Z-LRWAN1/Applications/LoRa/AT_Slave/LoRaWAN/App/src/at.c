@@ -410,6 +410,27 @@ ATEerror_t at_AppKey_set(const char *param)
   return AT_OK;
 }
 
+extern LoRaMacRegion_t globalRegion;
+ATEerror_t at_Band_get(const char *param)
+{
+  print_d(globalRegion);
+  return AT_OK;
+}
+
+ATEerror_t at_Band_set(const char *param)
+{
+  LoRaMacRegion_t region;
+  if (tiny_sscanf(param, "%hhu", &region)  != 1)
+  {
+    return AT_PARAM_ERROR;
+  }
+  if (region != globalRegion) {
+	  globalRegion = region;
+	  TriggerReinit(globalRegion);
+  }
+  return AT_OK;
+}
+
 ATEerror_t at_NwkSKey_get(const char *param)
 {
   MibRequestConfirm_t mib;

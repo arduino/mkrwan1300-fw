@@ -102,7 +102,7 @@ static LoRaParam_t LoRaParamInit = {LORAWAN_ADR_ON,
                                     LORAWAN_PUBLIC_NETWORK
                                    };
 
-
+LoRaMacRegion_t globalRegion = LORAMAC_REGION_EU868;
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -134,7 +134,7 @@ int main(void)
   /* USER CODE END 1 */
 
   /* Configure the Lora Stack*/
-  LORA_Init(&LoRaMainCallbacks, &LoRaParamInit);
+  LORA_Init(&LoRaMainCallbacks, &LoRaParamInit, globalRegion);
 
   /* main loop*/
   while (1)

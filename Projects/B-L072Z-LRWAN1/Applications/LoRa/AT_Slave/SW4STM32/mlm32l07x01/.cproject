@@ -58,6 +58,15 @@
 									<listOptionValue builtIn="false" value="USE_FULL_LL_DRIVER"/>
 									<listOptionValue builtIn="false" value="NO_MAC_PRINTF"/>
 									<listOptionValue builtIn="false" value="REGION_EU868"/>
+									<listOptionValue builtIn="false" value="REGION_AS923"/>
+									<listOptionValue builtIn="false" value="REGION_AU915"/>
+									<listOptionValue builtIn="false" value="REGION_CN470"/>
+									<listOptionValue builtIn="false" value="REGION_CN779"/>
+									<listOptionValue builtIn="false" value="REGION_EU433"/>
+									<listOptionValue builtIn="false" value="REGION_IN865"/>
+									<listOptionValue builtIn="false" value="REGION_KR920"/>
+									<listOptionValue builtIn="false" value="REGION_US915"/>
+									<listOptionValue builtIn="false" value="REGION_RU864"/>
 								</option>
 								<option id="fr.ac6.managedbuild.gnu.c.compiler.option.misc.other.1826730290" superClass="fr.ac6.managedbuild.gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-fmessage-length=0" valueType="string"/>
 								<option id="gnu.c.compiler.option.dialect.std.665749972" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
