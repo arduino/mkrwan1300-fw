@@ -361,7 +361,13 @@ ATEerror_t at_JoinEUI_set(const char *param)
     return AT_PARAM_ERROR;
   }
 
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
   lora_config_joineui_set(JoinEui);
+  mib.Type = MIB_JOIN_EUI;
+  mib.Param.JoinEui = JoinEui;
+  status = LoRaMacMibSetRequestConfirm(&mib);
+  CHECK_STATUS(status);
   return AT_OK;
 }
 
