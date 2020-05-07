@@ -109,6 +109,19 @@ static const struct ATCommand_s ATCommand[] =
   },
 #endif
 
+#ifndef NO_BAND_RUNTIME_SWITCH
+  {
+    .string = AT_BAND,
+    .size_string = sizeof(AT_BAND) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_BAND ": Get or Set the Regional Band\r\n",
+#endif
+    .get = at_Band_get,
+    .set = at_Band_set,
+    .run = at_return_error,
+  },
+#endif
+
 #ifndef NO_KEY_ADDR_EUI
   {
     .string = AT_APPKEY,

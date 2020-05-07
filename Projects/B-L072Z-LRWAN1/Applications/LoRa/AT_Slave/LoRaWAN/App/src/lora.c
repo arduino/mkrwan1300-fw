@@ -53,11 +53,7 @@ typedef struct
 static lora_configuration_t lora_config =
 {
   .otaa = LORA_ENABLE,
-#if defined( REGION_EU868 )
-  .duty_cycle = LORA_ENABLE,
-#else
   .duty_cycle = LORA_DISABLE,
-#endif
   .DevEui = LORAWAN_DEVICE_EUI,
   .JoinEui = LORAWAN_JOIN_EUI,
   .AppKey = LORAWAN_APP_KEY,
@@ -87,7 +83,6 @@ static lora_configuration_t lora_config =
 
 #include "LoRaMacTest.h"
 
-#if defined( REGION_EU868 ) || defined( REGION_RU864 ) || defined( REGION_CN779 ) || defined( REGION_EU433 )
 /*!
  * LoRaWAN ETSI duty cycle control enable/disable
  *
@@ -95,7 +90,6 @@ static lora_configuration_t lora_config =
  */
 #define LORAWAN_DUTYCYCLE_ON                        true
 
-#endif
 
 #ifdef LORAMAC_CLASSB_ENABLED
 /*!
@@ -331,11 +325,11 @@ static void MlmeConfirm(MlmeConfirm_t *mlmeConfirm)
         mibReq.Param.Class = CLASS_B;
         LoRaMacMibSetRequestConfirm(&mibReq);
 
-#if defined( REGION_AU915 ) || defined( REGION_US915 )
-        mibReq.Type = MIB_PING_SLOT_DATARATE;
-        mibReq.Param.PingSlotDatarate = DR_8;
-        LoRaMacMibSetRequestConfirm(&mibReq);
-#endif
+        if ((LoRaRegion == LORAMAC_REGION_AU915) || (LoRaRegion == LORAMAC_REGION_US915)) {
+          mibReq.Type = MIB_PING_SLOT_DATARATE;
+          mibReq.Param.PingSlotDatarate = DR_8;
+          LoRaMacMibSetRequestConfirm(&mibReq);
+        }
 
         /*notify upper layer*/
         LoRaMainCallbacks->LORA_ConfirmClass(CLASS_B);
@@ -413,7 +407,7 @@ static void MlmeIndication(MlmeIndication_t *MlmeIndication)
 /**
  *  lora Init
  */
-void LORA_Init(LoRaMainCallback_t *callbacks, LoRaParam_t *LoRaParam)
+void LORA_Init(LoRaMainCallback_t *callbacks, LoRaParam_t *LoRaParam, LoRaMacRegion_t region)
 {
   /* init the Tx Duty Cycle*/
   LoRaParamInit = LoRaParam;
@@ -439,59 +433,28 @@ void LORA_Init(LoRaMainCallback_t *callbacks, LoRaParam_t *LoRaParam)
   LoRaMacCallbacks.GetBatteryLevel = LoRaMainCallbacks->BoardGetBatteryLevel;
   LoRaMacCallbacks.GetTemperatureLevel = LoRaMainCallbacks->BoardGetTemperatureLevel;
   LoRaMacCallbacks.MacProcessNotify = LoRaMainCallbacks->MacProcessNotify;
-#if defined( REGION_AS923 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_AS923);
-  LoRaRegion = LORAMAC_REGION_AS923;
-#elif defined( REGION_AU915 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_AU915);
-  LoRaRegion = LORAMAC_REGION_AU915;
-#elif defined( REGION_CN470 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_CN470);
-  LoRaRegion = LORAMAC_REGION_CN470;
-#elif defined( REGION_CN779 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_CN779);
-  LoRaRegion = LORAMAC_REGION_CN779;
-#elif defined( REGION_EU433 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_EU433);
-  LoRaRegion = LORAMAC_REGION_EU433;
-#elif defined( REGION_IN865 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_IN865);
-  LoRaRegion = LORAMAC_REGION_IN865;
-#elif defined( REGION_EU868 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_EU868);
-  LoRaRegion = LORAMAC_REGION_EU868;
-#elif defined( REGION_KR920 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_KR920);
-  LoRaRegion = LORAMAC_REGION_KR920;
-#elif defined( REGION_US915 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_US915);
-  LoRaRegion = LORAMAC_REGION_US915;
-#elif defined( REGION_RU864 )
-  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, LORAMAC_REGION_RU864);
-  LoRaRegion = LORAMAC_REGION_RU864;
-#else
-#error "Please define a region in the compiler options."
-#endif
+  LoRaMacInitialization(&LoRaMacPrimitives, &LoRaMacCallbacks, region);
+  LoRaRegion = region;
 
 #if defined( HYBRID )
-#if defined( REGION_US915 ) || defined( REGION_AU915 )
-  uint16_t channelMask[] = { 0x00FF, 0x0000, 0x0000, 0x0000, 0x0001, 0x0000};
-  mibReq.Type = MIB_CHANNELS_MASK;
-  mibReq.Param.ChannelsMask = channelMask;
-  LoRaMacMibSetRequestConfirm(&mibReq);
-  mibReq.Type = MIB_CHANNELS_DEFAULT_MASK;
-  mibReq.Param.ChannelsDefaultMask = channelMask;
-  LoRaMacMibSetRequestConfirm(&mibReq);
-#endif
-#if defined( REGION_CN470 )
-  uint16_t channelMask[] = { 0x00FF, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000};
-  mibReq.Type = MIB_CHANNELS_MASK;
-  mibReq.Param.ChannelsMask = channelMask;
-  LoRaMacMibSetRequestConfirm(&mibReq);
-  mibReq.Type = MIB_CHANNELS_DEFAULT_MASK;
-  mibReq.Param.ChannelsDefaultMask = channelMask;
-  LoRaMacMibSetRequestConfirm(&mibReq);
-#endif
+  if ((LoRaRegion == LORAMAC_REGION_US915) || (LoRaRegion == LORAMAC_REGION_AU915)) {
+	  uint16_t channelMask[] = { 0x00FF, 0x0000, 0x0000, 0x0000, 0x0001, 0x0000};
+	  mibReq.Type = MIB_CHANNELS_MASK;
+	  mibReq.Param.ChannelsMask = channelMask;
+	  LoRaMacMibSetRequestConfirm(&mibReq);
+	  mibReq.Type = MIB_CHANNELS_DEFAULT_MASK;
+	  mibReq.Param.ChannelsDefaultMask = channelMask;
+	  LoRaMacMibSetRequestConfirm(&mibReq);
+  }
+  if (LoRaRegion == LORAMAC_REGION_CN470) {
+	  uint16_t channelMask[] = { 0x00FF, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000};
+	  mibReq.Type = MIB_CHANNELS_MASK;
+	  mibReq.Param.ChannelsMask = channelMask;
+	  LoRaMacMibSetRequestConfirm(&mibReq);
+	  mibReq.Type = MIB_CHANNELS_DEFAULT_MASK;
+	  mibReq.Param.ChannelsDefaultMask = channelMask;
+	  LoRaMacMibSetRequestConfirm(&mibReq);
+  }
 #endif
 
   lora_config_otaa_set(LORA_ENABLE);
@@ -524,13 +487,14 @@ void LORA_Init(LoRaMainCallback_t *callbacks, LoRaParam_t *LoRaParam)
   mibReq.Param.Class = CLASS_A;
   LoRaMacMibSetRequestConfirm(&mibReq);
 
-#if defined( REGION_EU868 ) || defined( REGION_RU864 ) || defined( REGION_CN779 ) || defined( REGION_EU433 )
-  LoRaMacTestSetDutyCycleOn(LORAWAN_DUTYCYCLE_ON);
+  if ((LoRaRegion == LORAMAC_REGION_EU868) || (LoRaRegion == LORAMAC_REGION_RU864) || (LoRaRegion == LORAMAC_REGION_CN779) || (LoRaRegion == LORAMAC_REGION_EU433)) {
+	  LoRaMacTestSetDutyCycleOn(LORAWAN_DUTYCYCLE_ON);
 
-  lora_config.duty_cycle = LORA_ENABLE;
-#else
-  lora_config.duty_cycle = LORA_DISABLE;
-#endif
+	  lora_config.duty_cycle = LORA_ENABLE;
+  }
+  else {
+	  lora_config.duty_cycle = LORA_DISABLE;
+  }
 
   mibReq.Type = MIB_SYSTEM_MAX_RX_ERROR;
   mibReq.Param.SystemMaxRxError = 20;
@@ -968,6 +932,10 @@ void lora_wan_certif(void)
   TimerSetValue(&TxcertifTimer,  8000);  /* 8s */
   TimerStart(&TxcertifTimer);
 
+}
+
+void TriggerReinit( LoRaMacRegion_t region ) {
+	LORA_Init(LoRaMainCallbacks, LoRaParamInit, region);
 }
 
 LoRaMacRegion_t lora_region_get(void)
