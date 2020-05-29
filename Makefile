@@ -170,10 +170,10 @@ $(NAME).elf: $(OBJS)
 	$(SIZE) $@
 
 %.bin: %.elf
-	$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
+	$(BUILD) $(OBJCOPY) -O binary $< $@
 
 %.hex: %.elf
-	$(BUILD) $(OBJCOPY) -j .text -j .data -O ihex $< $@
+	$(BUILD) $(OBJCOPY) -O ihex $< $@
 
 fw.h: $(NAME).bin
 	echo -n "const " > fw.h && xxd -i $(NAME).bin >> fw.h
