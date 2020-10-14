@@ -139,6 +139,60 @@
 #define AU915_RX_BEACON_SETUP( )
 #endif
 
+#ifdef REGION_AU915_TTN
+#include "RegionAU915_TTN.h"
+#define AU915_TTN_CASE                                 case LORAMAC_REGION_AU915_TTN:
+#define AU915_TTN_IS_ACTIVE( )                         AU915_TTN_CASE { return true; }
+#define AU915_TTN_GET_PHY_PARAM( )                     AU915_TTN_CASE { return RegionAU915TTNGetPhyParam( getPhy ); }
+#define AU915_TTN_SET_BAND_TX_DONE( )                  AU915_TTN_CASE { RegionAU915TTNSetBandTxDone( txDone ); break; }
+#define AU915_TTN_INIT_DEFAULTS( )                     AU915_TTN_CASE { RegionAU915TTNInitDefaults( params ); break; }
+#define AU915_TTN_GET_NVM_CTX( )                       AU915_TTN_CASE { return RegionAU915TTNGetNvmCtx( params ); }
+#define AU915_TTN_VERIFY( )                            AU915_TTN_CASE { return RegionAU915TTNVerify( verify, phyAttribute ); }
+#define AU915_TTN_APPLY_CF_LIST( )                     AU915_TTN_CASE { RegionAU915TTNApplyCFList( applyCFList ); break; }
+#define AU915_TTN_CHAN_MASK_SET( )                     AU915_TTN_CASE { return RegionAU915TTNChanMaskSet( chanMaskSet ); }
+#define AU915_TTN_COMPUTE_RX_WINDOW_PARAMETERS( )      AU915_TTN_CASE { RegionAU915TTNComputeRxWindowParameters( datarate, minRxSymbols, rxError, rxConfigParams ); break; }
+#define AU915_TTN_RX_CONFIG( )                         AU915_TTN_CASE { return RegionAU915TTNRxConfig( rxConfig, datarate ); }
+#define AU915_TTN_TX_CONFIG( )                         AU915_TTN_CASE { return RegionAU915TTNTxConfig( txConfig, txPower, txTimeOnAir ); }
+#define AU915_TTN_LINK_ADR_REQ( )                      AU915_TTN_CASE { return RegionAU915TTNLinkAdrReq( linkAdrReq, drOut, txPowOut, nbRepOut, nbBytesParsed ); }
+#define AU915_TTN_RX_PARAM_SETUP_REQ( )                AU915_TTN_CASE { return RegionAU915TTNRxParamSetupReq( rxParamSetupReq ); }
+#define AU915_TTN_NEW_CHANNEL_REQ( )                   AU915_TTN_CASE { return RegionAU915TTNNewChannelReq( newChannelReq ); }
+#define AU915_TTN_TX_PARAM_SETUP_REQ( )                AU915_TTN_CASE { return RegionAU915TTNTxParamSetupReq( txParamSetupReq ); }
+#define AU915_TTN_DL_CHANNEL_REQ( )                    AU915_TTN_CASE { return RegionAU915TTNDlChannelReq( dlChannelReq ); }
+#define AU915_TTN_ALTERNATE_DR( )                      AU915_TTN_CASE { return RegionAU915TTNAlternateDr( currentDr, type ); }
+#define AU915_TTN_CALC_BACKOFF( )                      AU915_TTN_CASE { RegionAU915TTNCalcBackOff( calcBackOff ); break; }
+#define AU915_TTN_NEXT_CHANNEL( )                      AU915_TTN_CASE { return RegionAU915TTNNextChannel( nextChanParams, channel, time, aggregatedTimeOff ); }
+#define AU915_TTN_CHANNEL_ADD( )                       AU915_TTN_CASE { return RegionAU915TTNChannelAdd( channelAdd ); }
+#define AU915_TTN_CHANNEL_REMOVE( )                    AU915_TTN_CASE { return RegionAU915TTNChannelsRemove( channelRemove ); }
+#define AU915_TTN_SET_CONTINUOUS_WAVE( )               AU915_TTN_CASE { RegionAU915TTNSetContinuousWave( continuousWave ); break; }
+#define AU915_TTN_APPLY_DR_OFFSET( )                   AU915_TTN_CASE { return RegionAU915TTNApplyDrOffset( downlinkDwellTime, dr, drOffset ); }
+#define AU915_TTN_RX_BEACON_SETUP( )                   AU915_TTN_CASE { RegionAU915TTNRxBeaconSetup( rxBeaconSetup, outDr ); break; }
+#else
+#define AU915_TTN_IS_ACTIVE( )
+#define AU915_TTN_GET_PHY_PARAM( )
+#define AU915_TTN_SET_BAND_TX_DONE( )
+#define AU915_TTN_INIT_DEFAULTS( )
+#define AU915_TTN_GET_NVM_CTX( )
+#define AU915_TTN_VERIFY( )
+#define AU915_TTN_APPLY_CF_LIST( )
+#define AU915_TTN_CHAN_MASK_SET( )
+#define AU915_TTN_COMPUTE_RX_WINDOW_PARAMETERS( )
+#define AU915_TTN_RX_CONFIG( )
+#define AU915_TTN_TX_CONFIG( )
+#define AU915_TTN_LINK_ADR_REQ( )
+#define AU915_TTN_RX_PARAM_SETUP_REQ( )
+#define AU915_TTN_NEW_CHANNEL_REQ( )
+#define AU915_TTN_TX_PARAM_SETUP_REQ( )
+#define AU915_TTN_DL_CHANNEL_REQ( )
+#define AU915_TTN_ALTERNATE_DR( )
+#define AU915_TTN_CALC_BACKOFF( )
+#define AU915_TTN_NEXT_CHANNEL( )
+#define AU915_TTN_CHANNEL_ADD( )
+#define AU915_TTN_CHANNEL_REMOVE( )
+#define AU915_TTN_SET_CONTINUOUS_WAVE( )
+#define AU915_TTN_APPLY_DR_OFFSET( )
+#define AU915_TTN_RX_BEACON_SETUP( )
+#endif
+
 #ifdef REGION_CN470
 #include "RegionCN470.h"
 #define CN470_CASE                                 case LORAMAC_REGION_CN470:
@@ -577,6 +631,7 @@ bool RegionIsActive( LoRaMacRegion_t region )
     {
         AS923_IS_ACTIVE( );
         AU915_IS_ACTIVE( );
+        AU915_TTN_IS_ACTIVE( );
         CN470_IS_ACTIVE( );
         CN779_IS_ACTIVE( );
         EU433_IS_ACTIVE( );
@@ -599,6 +654,7 @@ PhyParam_t RegionGetPhyParam( LoRaMacRegion_t region, GetPhyParams_t* getPhy )
     {
         AS923_GET_PHY_PARAM( );
         AU915_GET_PHY_PARAM( );
+        AU915_TTN_GET_PHY_PARAM( );
         CN470_GET_PHY_PARAM( );
         CN779_GET_PHY_PARAM( );
         EU433_GET_PHY_PARAM( );
@@ -620,6 +676,7 @@ void RegionSetBandTxDone( LoRaMacRegion_t region, SetBandTxDoneParams_t* txDone 
     {
         AS923_SET_BAND_TX_DONE( );
         AU915_SET_BAND_TX_DONE( );
+        AU915_TTN_SET_BAND_TX_DONE( );
         CN470_SET_BAND_TX_DONE( );
         CN779_SET_BAND_TX_DONE( );
         EU433_SET_BAND_TX_DONE( );
@@ -641,6 +698,7 @@ void RegionInitDefaults( LoRaMacRegion_t region, InitDefaultsParams_t* params )
     {
         AS923_INIT_DEFAULTS( );
         AU915_INIT_DEFAULTS( );
+        AU915_TTN_INIT_DEFAULTS( );
         CN470_INIT_DEFAULTS( );
         CN779_INIT_DEFAULTS( );
         EU433_INIT_DEFAULTS( );
@@ -662,6 +720,7 @@ void* RegionGetNvmCtx( LoRaMacRegion_t region, GetNvmCtxParams_t* params )
     {
         AS923_GET_NVM_CTX( );
         AU915_GET_NVM_CTX( );
+        AU915_TTN_GET_NVM_CTX( );
         CN470_GET_NVM_CTX( );
         CN779_GET_NVM_CTX( );
         EU433_GET_NVM_CTX( );
@@ -683,6 +742,7 @@ bool RegionVerify( LoRaMacRegion_t region, VerifyParams_t* verify, PhyAttribute_
     {
         AS923_VERIFY( );
         AU915_VERIFY( );
+        AU915_TTN_VERIFY( );
         CN470_VERIFY( );
         CN779_VERIFY( );
         EU433_VERIFY( );
@@ -704,6 +764,7 @@ void RegionApplyCFList( LoRaMacRegion_t region, ApplyCFListParams_t* applyCFList
     {
         AS923_APPLY_CF_LIST( );
         AU915_APPLY_CF_LIST( );
+        AU915_TTN_APPLY_CF_LIST( );
         CN470_APPLY_CF_LIST( );
         CN779_APPLY_CF_LIST( );
         EU433_APPLY_CF_LIST( );
@@ -725,6 +786,7 @@ bool RegionChanMaskSet( LoRaMacRegion_t region, ChanMaskSetParams_t* chanMaskSet
     {
         AS923_CHAN_MASK_SET( );
         AU915_CHAN_MASK_SET( );
+        AU915_TTN_CHAN_MASK_SET( );
         CN470_CHAN_MASK_SET( );
         CN779_CHAN_MASK_SET( );
         EU433_CHAN_MASK_SET( );
@@ -746,6 +808,7 @@ void RegionComputeRxWindowParameters( LoRaMacRegion_t region, int8_t datarate, u
     {
         AS923_COMPUTE_RX_WINDOW_PARAMETERS( );
         AU915_COMPUTE_RX_WINDOW_PARAMETERS( );
+        AU915_TTN_COMPUTE_RX_WINDOW_PARAMETERS( );
         CN470_COMPUTE_RX_WINDOW_PARAMETERS( );
         CN779_COMPUTE_RX_WINDOW_PARAMETERS( );
         EU433_COMPUTE_RX_WINDOW_PARAMETERS( );
@@ -767,6 +830,7 @@ bool RegionRxConfig( LoRaMacRegion_t region, RxConfigParams_t* rxConfig, int8_t*
     {
         AS923_RX_CONFIG( );
         AU915_RX_CONFIG( );
+        AU915_TTN_RX_CONFIG( );
         CN470_RX_CONFIG( );
         CN779_RX_CONFIG( );
         EU433_RX_CONFIG( );
@@ -788,6 +852,7 @@ bool RegionTxConfig( LoRaMacRegion_t region, TxConfigParams_t* txConfig, int8_t*
     {
         AS923_TX_CONFIG( );
         AU915_TX_CONFIG( );
+        AU915_TTN_TX_CONFIG( );
         CN470_TX_CONFIG( );
         CN779_TX_CONFIG( );
         EU433_TX_CONFIG( );
@@ -809,6 +874,7 @@ uint8_t RegionLinkAdrReq( LoRaMacRegion_t region, LinkAdrReqParams_t* linkAdrReq
     {
         AS923_LINK_ADR_REQ( );
         AU915_LINK_ADR_REQ( );
+        AU915_TTN_LINK_ADR_REQ( );
         CN470_LINK_ADR_REQ( );
         CN779_LINK_ADR_REQ( );
         EU433_LINK_ADR_REQ( );
@@ -830,6 +896,7 @@ uint8_t RegionRxParamSetupReq( LoRaMacRegion_t region, RxParamSetupReqParams_t* 
     {
         AS923_RX_PARAM_SETUP_REQ( );
         AU915_RX_PARAM_SETUP_REQ( );
+        AU915_TTN_RX_PARAM_SETUP_REQ( );
         CN470_RX_PARAM_SETUP_REQ( );
         CN779_RX_PARAM_SETUP_REQ( );
         EU433_RX_PARAM_SETUP_REQ( );
@@ -851,6 +918,7 @@ uint8_t RegionNewChannelReq( LoRaMacRegion_t region, NewChannelReqParams_t* newC
     {
         AS923_NEW_CHANNEL_REQ( );
         AU915_NEW_CHANNEL_REQ( );
+        AU915_TTN_NEW_CHANNEL_REQ( );
         CN470_NEW_CHANNEL_REQ( );
         CN779_NEW_CHANNEL_REQ( );
         EU433_NEW_CHANNEL_REQ( );
@@ -872,6 +940,7 @@ int8_t RegionTxParamSetupReq( LoRaMacRegion_t region, TxParamSetupReqParams_t* t
     {
         AS923_TX_PARAM_SETUP_REQ( );
         AU915_TX_PARAM_SETUP_REQ( );
+        AU915_TTN_TX_PARAM_SETUP_REQ( );
         CN470_TX_PARAM_SETUP_REQ( );
         CN779_TX_PARAM_SETUP_REQ( );
         EU433_TX_PARAM_SETUP_REQ( );
@@ -893,6 +962,7 @@ uint8_t RegionDlChannelReq( LoRaMacRegion_t region, DlChannelReqParams_t* dlChan
     {
         AS923_DL_CHANNEL_REQ( );
         AU915_DL_CHANNEL_REQ( );
+        AU915_TTN_DL_CHANNEL_REQ( );
         CN470_DL_CHANNEL_REQ( );
         CN779_DL_CHANNEL_REQ( );
         EU433_DL_CHANNEL_REQ( );
@@ -914,6 +984,7 @@ int8_t RegionAlternateDr( LoRaMacRegion_t region, int8_t currentDr, AlternateDrT
     {
         AS923_ALTERNATE_DR( );
         AU915_ALTERNATE_DR( );
+        AU915_TTN_ALTERNATE_DR( );
         CN470_ALTERNATE_DR( );
         CN779_ALTERNATE_DR( );
         EU433_ALTERNATE_DR( );
@@ -935,6 +1006,7 @@ void RegionCalcBackOff( LoRaMacRegion_t region, CalcBackOffParams_t* calcBackOff
     {
         AS923_CALC_BACKOFF( );
         AU915_CALC_BACKOFF( );
+        AU915_TTN_CALC_BACKOFF( );
         CN470_CALC_BACKOFF( );
         CN779_CALC_BACKOFF( );
         EU433_CALC_BACKOFF( );
@@ -956,6 +1028,7 @@ LoRaMacStatus_t RegionNextChannel( LoRaMacRegion_t region, NextChanParams_t* nex
     {
         AS923_NEXT_CHANNEL( );
         AU915_NEXT_CHANNEL( );
+        AU915_TTN_NEXT_CHANNEL( );
         CN470_NEXT_CHANNEL( );
         CN779_NEXT_CHANNEL( );
         EU433_NEXT_CHANNEL( );
@@ -977,6 +1050,7 @@ LoRaMacStatus_t RegionChannelAdd( LoRaMacRegion_t region, ChannelAddParams_t* ch
     {
         AS923_CHANNEL_ADD( );
         AU915_CHANNEL_ADD( );
+        AU915_TTN_CHANNEL_ADD( );
         CN470_CHANNEL_ADD( );
         CN779_CHANNEL_ADD( );
         EU433_CHANNEL_ADD( );
@@ -998,6 +1072,7 @@ bool RegionChannelsRemove( LoRaMacRegion_t region, ChannelRemoveParams_t* channe
     {
         AS923_CHANNEL_REMOVE( );
         AU915_CHANNEL_REMOVE( );
+        AU915_TTN_CHANNEL_REMOVE( );
         CN470_CHANNEL_REMOVE( );
         CN779_CHANNEL_REMOVE( );
         EU433_CHANNEL_REMOVE( );
@@ -1019,6 +1094,7 @@ void RegionSetContinuousWave( LoRaMacRegion_t region, ContinuousWaveParams_t* co
     {
         AS923_SET_CONTINUOUS_WAVE( );
         AU915_SET_CONTINUOUS_WAVE( );
+        AU915_TTN_SET_CONTINUOUS_WAVE( );
         CN470_SET_CONTINUOUS_WAVE( );
         CN779_SET_CONTINUOUS_WAVE( );
         EU433_SET_CONTINUOUS_WAVE( );
@@ -1040,6 +1116,7 @@ uint8_t RegionApplyDrOffset( LoRaMacRegion_t region, uint8_t downlinkDwellTime, 
     {
         AS923_APPLY_DR_OFFSET( );
         AU915_APPLY_DR_OFFSET( );
+        AU915_TTN_APPLY_DR_OFFSET( );
         CN470_APPLY_DR_OFFSET( );
         CN779_APPLY_DR_OFFSET( );
         EU433_APPLY_DR_OFFSET( );
@@ -1061,6 +1138,7 @@ void RegionRxBeaconSetup( LoRaMacRegion_t region, RxBeaconSetup_t* rxBeaconSetup
     {
         AS923_RX_BEACON_SETUP( );
         AU915_RX_BEACON_SETUP( );
+        AU915_TTN_RX_BEACON_SETUP( );
         CN470_RX_BEACON_SETUP( );
         CN779_RX_BEACON_SETUP( );
         EU433_RX_BEACON_SETUP( );

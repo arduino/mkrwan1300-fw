@@ -56,15 +56,15 @@ struct ATCommand_s
  */
 static const char *const ATError_description[] =
 {
-  "\r\nOK\r\n",                     /* AT_OK */
-  "\r\nAT_ERROR\r\n",               /* AT_ERROR */
-  "\r\nAT_PARAM_ERROR\r\n",         /* AT_PARAM_ERROR */
-  "\r\nAT_BUSY_ERROR\r\n",          /* AT_BUSY_ERROR */
-  "\r\nAT_TEST_PARAM_OVERFLOW\r\n", /* AT_TEST_PARAM_OVERFLOW */
-  "\r\nAT_NO_NETWORK_JOINED\r\n",   /* AT_NO_NET_JOINED */
-  "\r\nAT_RX_ERROR\r\n",            /* AT_RX_ERROR */
-  "\r\nAT_NO_CLASS_B_ENABLE\r\n",  /* AT_NO_CLASS_B_ENABLE */
-  "\r\nerror unknown\r\n",          /* AT_MAX */
+  "+OK\r\n",                     /* AT_OK */
+  "+ERROR\r\n",               /* AT_ERROR */
+  "+PARAM_ERROR\r\n",         /* AT_PARAM_ERROR */
+  "+ERR_BUSY\r\n",          /* AT_BUSY_ERROR */
+  "+ERR_PARAM_OVERFLOW\r\n", /* AT_TEST_PARAM_OVERFLOW */
+  "+ERR_NO_NETWORK\r\n",   /* AT_NO_NET_JOINED */
+  "+ERR_RX\r\n",            /* AT_RX_ERROR */
+  "+ERR_NO_CLASS_B_ENABLE\r\n",  /* AT_NO_CLASS_B_ENABLE */
+  "+ERR_UNKNOWN\r\n",          /* AT_MAX */
 };
 
 /**

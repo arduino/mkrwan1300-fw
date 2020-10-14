@@ -325,7 +325,7 @@ static void MlmeConfirm(MlmeConfirm_t *mlmeConfirm)
         mibReq.Param.Class = CLASS_B;
         LoRaMacMibSetRequestConfirm(&mibReq);
 
-        if ((LoRaRegion == LORAMAC_REGION_AU915) || (LoRaRegion == LORAMAC_REGION_US915)) {
+        if ((LoRaRegion == LORAMAC_REGION_AU915) || (LoRaRegion == LORAMAC_REGION_AU915_TTN) || (LoRaRegion == LORAMAC_REGION_US915)) {
           mibReq.Type = MIB_PING_SLOT_DATARATE;
           mibReq.Param.PingSlotDatarate = DR_8;
           LoRaMacMibSetRequestConfirm(&mibReq);
@@ -437,8 +437,19 @@ void LORA_Init(LoRaMainCallback_t *callbacks, LoRaParam_t *LoRaParam, LoRaMacReg
   LoRaRegion = region;
 
 #if defined( HYBRID )
-  if ((LoRaRegion == LORAMAC_REGION_US915) || (LoRaRegion == LORAMAC_REGION_AU915)) {
+  if (LoRaRegion == LORAMAC_REGION_US915) {
 	  uint16_t channelMask[] = { 0x00FF, 0x0000, 0x0000, 0x0000, 0x0001, 0x0000};
+	  mibReq.Type = MIB_CHANNELS_MASK;
+	  mibReq.Param.ChannelsMask = channelMask;
+	  LoRaMacMibSetRequestConfirm(&mibReq);
+	  mibReq.Type = MIB_CHANNELS_DEFAULT_MASK;
+	  mibReq.Param.ChannelsDefaultMask = channelMask;
+	  LoRaMacMibSetRequestConfirm(&mibReq);
+  }
+  // this configuration for AU915 does not connect as reliably as the specific AU915_TTN region due to differences
+  // in the 1.0.2 and 1.0.3 region specific specification
+  if (LoRaRegion == LORAMAC_REGION_AU915) {
+	  uint16_t channelMask[] = { 0xFF00, 0x0000, 0x0000, 0x0000, 0x0002, 0x0000};
 	  mibReq.Type = MIB_CHANNELS_MASK;
 	  mibReq.Param.ChannelsMask = channelMask;
 	  LoRaMacMibSetRequestConfirm(&mibReq);

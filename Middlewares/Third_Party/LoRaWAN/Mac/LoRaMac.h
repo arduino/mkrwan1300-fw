@@ -217,6 +217,10 @@ typedef enum eLoRaMacRegion_t
      * Russia band on 864MHz
      */
     LORAMAC_REGION_RU864,
+    /*!
+     * TTN Specific AU band, as this is custom, we will place it in a higher value
+     */
+    LORAMAC_REGION_AU915_TTN = 0x80 | LORAMAC_REGION_AU915,
 }LoRaMacRegion_t;
 
 /*!

@@ -67,6 +67,7 @@
 									<listOptionValue builtIn="false" value="REGION_KR920"/>
 									<listOptionValue builtIn="false" value="REGION_US915"/>
 									<listOptionValue builtIn="false" value="REGION_RU864"/>
+									<listOptionValue builtIn="false" value="REGION_AU915_TTN"/>
 								</option>
 								<option id="fr.ac6.managedbuild.gnu.c.compiler.option.misc.other.1826730290" superClass="fr.ac6.managedbuild.gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-fmessage-length=0" valueType="string"/>
 								<option id="gnu.c.compiler.option.dialect.std.665749972" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
