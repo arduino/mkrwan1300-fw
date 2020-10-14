@@ -456,13 +456,12 @@ ATEerror_t at_NwkSKey_set(const char *param)
   LoRaMacStatus_t status;
   uint8_t NwkSKey[16];
 
-  mib.Type = MIB_NWK_S_ENC_KEY;
-
   if (sscanf_16_hhx(param, NwkSKey) != 16)
   {
     return AT_PARAM_ERROR;
   }
 
+  mib.Type = MIB_NWK_S_ENC_KEY;
   mib.Param.NwkSEncKey = NwkSKey;
   status = LoRaMacMibSetRequestConfirm(&mib);
   CHECK_STATUS(status);
