@@ -704,7 +704,7 @@ void CMD_Process(void)
       com_error(AT_RX_ERROR);
       i = 0;
     }
-    else if ((circBuffer[ridx] == '\r') || (circBuffer[ridx] == '\n'))
+    else if (circBuffer[ridx] == '\n')
     {
       ridx++;
       if (ridx == CIRC_BUFF_SIZE)
