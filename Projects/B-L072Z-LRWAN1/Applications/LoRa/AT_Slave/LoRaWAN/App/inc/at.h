@@ -60,6 +60,8 @@ typedef enum eATEerror
 #define AT_DADDR      "+DADDR"
 #define AT_APPKEY     "+APPKEY"
 #define AT_NWKSKEY    "+NWKSKEY"
+#define AT_FNWKSKEY    "+FNWKSKEY"
+#define AT_SNWKSKEY    "+SNWKSKEY"
 #define AT_APPSKEY    "+APPSKEY"
 #define AT_JOINEUI     "+APPEUI" /*to match with V1.0.x specification- For V1.1.x "+APPEUI" will be replaced by "+JOINEUI"*/
 #define AT_ADR        "+ADR"
@@ -208,6 +210,35 @@ ATEerror_t at_NwkSKey_get(const char *param);
  * @retval AT_OK if OK, or an appropriate AT_xxx error code
  */
 ATEerror_t at_NwkSKey_set(const char *param);
+
+/**
+ * @brief  Print Forwarding Network session integrity key
+ * @param  String pointing to provided DevAddr
+ * @retval AT_OK if OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_FNwkSKey_get(const char *param);
+
+/**
+ * @brief  Set Forwarding Network session integrity key
+ * @param  String pointing to provided DevAddr
+ * @retval AT_OK if OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_FNwkSKey_set(const char *param);
+
+/**
+ * @brief  Print Serving Network session integrity key
+ * @param  String pointing to provided DevAddr
+ * @retval AT_OK if OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_SNwkSKey_get(const char *param);
+
+/**
+ * @brief  Set Serving Network session integrity key
+ * @param  String pointing to provided DevAddr
+ * @retval AT_OK if OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_SNwkSKey_set(const char *param);
+
 
 /**
  * @brief  Print Application Session Key

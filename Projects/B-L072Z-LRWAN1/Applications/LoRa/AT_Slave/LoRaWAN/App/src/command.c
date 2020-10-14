@@ -150,6 +150,32 @@ static const struct ATCommand_s ATCommand[] =
 
 #ifndef NO_KEY_ADDR_EUI
   {
+    .string = AT_FNWKSKEY,
+    .size_string = sizeof(AT_FNWKSKEY) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_FNWKSKEY ": Set the Forwarding Network Session Integrity Key\r\n",
+#endif
+    .get = at_return_error,
+    .set = at_FNwkSKey_set,
+    .run = at_return_error,
+  },
+#endif
+
+#ifndef NO_KEY_ADDR_EUI
+  {
+    .string = AT_SNWKSKEY,
+    .size_string = sizeof(AT_SNWKSKEY) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_SNWKSKEY ": Set the Serving Network Session Integrity Key\r\n",
+#endif
+    .get = at_return_error,
+    .set = at_SNwkSKey_set,
+    .run = at_return_error,
+  },
+#endif
+
+#ifndef NO_KEY_ADDR_EUI
+  {
     .string = AT_APPSKEY,
     .size_string = sizeof(AT_APPSKEY) - 1,
 #ifndef NO_HELP

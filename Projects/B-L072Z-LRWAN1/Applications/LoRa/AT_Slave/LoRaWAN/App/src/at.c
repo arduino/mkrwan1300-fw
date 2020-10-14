@@ -470,6 +470,72 @@ ATEerror_t at_NwkSKey_set(const char *param)
   return AT_OK;
 }
 
+
+ATEerror_t at_FNwkSKey_get(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+
+  mib.Type = MIB_F_NWK_S_INT_KEY;
+  status = LoRaMacMibGetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+  print_16_02x(mib.Param.FNwkSIntKey);
+
+  return AT_OK;
+}
+
+ATEerror_t at_FNwkSKey_set(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+  uint8_t FNwkSKey[16];
+
+  if (sscanf_16_hhx(param, FNwkSKey) != 16)
+  {
+    return AT_PARAM_ERROR;
+  }
+
+  mib.Type = MIB_F_NWK_S_INT_KEY;
+  mib.Param.FNwkSIntKey = FNwkSKey;
+  status = LoRaMacMibSetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+
+  return AT_OK;
+}
+
+
+ATEerror_t at_SNwkSKey_get(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+
+  mib.Type = MIB_S_NWK_S_INT_KEY;
+  status = LoRaMacMibGetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+  print_16_02x(mib.Param.SNwkSIntKey);
+
+  return AT_OK;
+}
+
+ATEerror_t at_SNwkSKey_set(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+  uint8_t SNwkSKey[16];
+
+  if (sscanf_16_hhx(param, SNwkSKey) != 16)
+  {
+    return AT_PARAM_ERROR;
+  }
+
+  mib.Type = MIB_S_NWK_S_INT_KEY;
+  mib.Param.SNwkSIntKey = SNwkSKey;
+  status = LoRaMacMibSetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+
+  return AT_OK;
+}
+
 ATEerror_t at_AppSKey_get(const char *param)
 {
   MibRequestConfirm_t mib;
