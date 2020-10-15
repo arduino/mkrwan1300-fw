@@ -102,7 +102,7 @@ static LoRaParam_t LoRaParamInit = {LORAWAN_ADR_ON,
                                     LORAWAN_PUBLIC_NETWORK
                                    };
 
-LoRaMacRegion_t globalRegion = LORAMAC_REGION_EU868;
+LoRaMacRegion_t globalRegion = LORAMAC_REGION_AU915;
 
 /* Private functions ---------------------------------------------------------*/
 
