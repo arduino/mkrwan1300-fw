@@ -406,7 +406,6 @@ static void MlmeIndication(MlmeIndication_t *MlmeIndication)
 }
 
 //#define HYBRID
-
 /**
  *  lora Init
  */
