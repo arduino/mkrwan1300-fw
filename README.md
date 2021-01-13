@@ -10,7 +10,7 @@ The project is provided a [System Workbench for STM32](http://www.openstm32.org/
 
 All the code maintains its original license.
 
-## AT Command list
+## AT Command List
 
 | Command      | Description
 | ------------ | ------------- |
