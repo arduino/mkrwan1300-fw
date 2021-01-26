@@ -9,11 +9,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 #
+SHELL := /bin/bash
 
 NAME ?= mlm32l07x01
 
 CROSS_COMPILE = arm-none-eabi-
 CC = $(CROSS_COMPILE)gcc
+AS = $(CROSS_COMPILE)as
 OBJCOPY = $(CROSS_COMPILE)objcopy
 SIZE = $(CROSS_COMPILE)size
 
@@ -129,17 +131,20 @@ endif
 
 .PHONY:		all clean
 
-all:		$(NAME).bin $(NAME).hex
+all:		$(NAME).bin $(NAME).hex fw.h
 
 $(NAME).elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS)
 	$(SIZE) $@
 
 %.bin: %.elf
-	$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
+	$(BUILD) $(OBJCOPY) -O binary $< $@
 
 %.hex: %.elf
-	$(BUILD) $(OBJCOPY) -j .text -j .data -O ihex $< $@
+	$(BUILD) $(OBJCOPY) -O ihex $< $@
+
+fw.h: $(NAME).bin
+	echo -n "const " > fw.h && xxd -i $(NAME).bin >> fw.h
 
 # ----- Cleanup ---------------------------------------------------------------
 
