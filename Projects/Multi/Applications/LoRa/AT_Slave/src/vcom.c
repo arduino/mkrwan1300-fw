@@ -116,7 +116,7 @@ void vcom_Init(void)
 
   LPUART_InitStruct.BaudRate = 19200;
   LPUART_InitStruct.DataWidth = LL_LPUART_DATAWIDTH_8B;
-  LPUART_InitStruct.StopBits = LL_LPUART_STOPBITS_1;
+  LPUART_InitStruct.StopBits = LL_LPUART_STOPBITS_2;
   LPUART_InitStruct.Parity = LL_LPUART_PARITY_NONE;
   LPUART_InitStruct.TransferDirection = LL_LPUART_DIRECTION_TX_RX;
   LPUART_InitStruct.HardwareFlowControl = LL_LPUART_HWCONTROL_NONE;
