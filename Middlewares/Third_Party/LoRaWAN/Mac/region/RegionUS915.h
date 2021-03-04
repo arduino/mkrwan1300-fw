@@ -37,6 +37,11 @@
 #ifndef __REGION_US915_H__
 #define __REGION_US915_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "region/Region.h"
 
 /*!
@@ -80,11 +85,6 @@
 #define US915_MAX_RX1_DR_OFFSET                     3
 
 /*!
- * Default Rx1 receive datarate offset
- */
-#define US915_DEFAULT_RX1_DR_OFFSET                 0
-
-/*!
  * Minimal Tx output power that can be used by the node
  */
 #define US915_MIN_TX_POWER                          TX_POWER_14
@@ -105,16 +105,6 @@
 #define US915_DEFAULT_MAX_ERP                      30.0f
 
 /*!
- * ADR Ack limit
- */
-#define US915_ADR_ACK_LIMIT                         64
-
-/*!
- * ADR Ack delay
- */
-#define US915_ADR_ACK_DELAY                         32
-
-/*!
  * Enabled or disabled the duty cycle
  */
 #define US915_DUTY_CYCLE_ENABLED                    0
@@ -125,41 +115,6 @@
 #define US915_MAX_RX_WINDOW                         3000
 
 /*!
- * Receive delay 1
- */
-#define US915_RECEIVE_DELAY1                        1000
-
-/*!
- * Receive delay 2
- */
-#define US915_RECEIVE_DELAY2                        2000
-
-/*!
- * Join accept delay 1
- */
-#define US915_JOIN_ACCEPT_DELAY1                    5000
-
-/*!
- * Join accept delay 2
- */
-#define US915_JOIN_ACCEPT_DELAY2                    6000
-
-/*!
- * Maximum frame counter gap
- */
-#define US915_MAX_FCNT_GAP                          16384
-
-/*!
- * Ack timeout
- */
-#define US915_ACKTIMEOUT                            2000
-
-/*!
- * Random ack timeout limits
- */
-#define US915_ACK_TIMEOUT_RND                       1000
-
-/*!
  * Second reception window channel frequency definition.
  */
 #define US915_RX_WND_2_FREQ                         923300000
@@ -168,6 +123,11 @@
  * Second reception window channel datarate definition.
  */
 #define US915_RX_WND_2_DR                           DR_8
+
+/*!
+ * Default uplink dwell time configuration
+ */
+#define US915_DEFAULT_UPLINK_DWELL_TIME             0
 
 /*
  * CLASS B
@@ -183,6 +143,11 @@
 #define US915_BEACON_CHANNEL_STEPWIDTH              600000
 
 /*!
+ * Ping slot channel frequency
+ */
+#define US915_PING_SLOT_CHANNEL_FREQ                923300000
+
+/*!
  * Number of possible beacon channels
  */
 #define US915_BEACON_NB_CHANNELS                    8
@@ -195,7 +160,7 @@
 /*!
  * Size of RFU 1 field
  */
-#define US915_RFU1_SIZE                             5
+#define US915_RFU1_SIZE                             4
 
 /*!
  * Size of RFU 2 field
@@ -224,9 +189,9 @@
 
 /*!
  * Band 0 definition
- * { DutyCycle, TxMaxPower, LastJoinTxDoneTime, LastTxDoneTime, TimeOff }
+ * Band = { DutyCycle, TxMaxPower, LastBandUpdateTime, LastMaxCreditAssignTime, TimeCredits, MaxTimeCredits, ReadyForTransmission }
  */
-#define US915_BAND0                                 { 1, US915_MAX_TX_POWER, 0, 0, 0 } //  100.0 %
+#define US915_BAND0                                 { 1, US915_MAX_TX_POWER, 0, 0, 0, 0, 0 } //  100.0 %
 
 /*!
  * Defines the first channel for RX window 1 for US band
@@ -266,14 +231,9 @@ static const int8_t DatarateOffsetsUS915[5][4] =
 };
 
 /*!
- * Maximum payload with respect to the datarate index. Cannot operate with repeater.
+ * Maximum payload with respect to the datarate index.
  */
 static const uint8_t MaxPayloadOfDatarateUS915[] = { 11, 53, 125, 242, 242, 0, 0, 0, 53, 129, 242, 242, 242, 242, 0, 0 };
-
-/*!
- * Maximum payload with respect to the datarate index. Can operate with repeater.
- */
-static const uint8_t MaxPayloadOfDatarateRepeaterUS915[] = { 11, 53, 125, 242, 242, 0, 0, 0, 33, 109, 222, 222, 222, 222, 0, 0 };
 
 /*!
  * \brief The function gets a value of a specific phy attribute.
@@ -297,15 +257,6 @@ void RegionUS915SetBandTxDone( SetBandTxDoneParams_t* txDone );
  * \param [IN] type Sets the initialization type.
  */
 void RegionUS915InitDefaults( InitDefaultsParams_t* params );
-
-/*!
- * \brief Returns a pointer to the internal context and its size.
- *
- * \param [OUT] params Pointer to the function parameters.
- *
- * \retval      Points to a structure where the module store its non-volatile context.
- */
-void* RegionUS915GetNvmCtx( GetNvmCtxParams_t* params );
 
 /*!
  * \brief Verifies a parameter.
@@ -399,7 +350,7 @@ uint8_t RegionUS915RxParamSetupReq( RxParamSetupReqParams_t* rxParamSetupReq );
  *
  * \retval Returns the status of the operation, according to the LoRaMAC specification.
  */
-uint8_t RegionUS915NewChannelReq( NewChannelReqParams_t* newChannelReq );
+int8_t RegionUS915NewChannelReq( NewChannelReqParams_t* newChannelReq );
 
 /*!
  * \brief The function processes a TX ParamSetup Request.
@@ -419,7 +370,7 @@ int8_t RegionUS915TxParamSetupReq( TxParamSetupReqParams_t* txParamSetupReq );
  *
  * \retval Returns the status of the operation, according to the LoRaMAC specification.
  */
-uint8_t RegionUS915DlChannelReq( DlChannelReqParams_t* dlChannelReq );
+int8_t RegionUS915DlChannelReq( DlChannelReqParams_t* dlChannelReq );
 
 /*!
  * \brief Alternates the datarate of the channel for the join request.
@@ -431,13 +382,6 @@ uint8_t RegionUS915DlChannelReq( DlChannelReqParams_t* dlChannelReq );
  * \retval Datarate to apply.
  */
 int8_t RegionUS915AlternateDr( int8_t currentDr, AlternateDrType_t type );
-
-/*!
- * \brief Calculates the back-off time.
- *
- * \param [IN] calcBackOff Pointer to the function parameters.
- */
-void RegionUS915CalcBackOff( CalcBackOffParams_t* calcBackOff );
 
 /*!
  * \brief Searches and set the next random available channel
@@ -472,13 +416,6 @@ LoRaMacStatus_t RegionUS915ChannelAdd( ChannelAddParams_t* channelAdd );
 bool RegionUS915ChannelsRemove( ChannelRemoveParams_t* channelRemove  );
 
 /*!
- * \brief Sets the radio into continuous wave mode.
- *
- * \param [IN] continuousWave Pointer to the function parameters.
- */
-void RegionUS915SetContinuousWave( ContinuousWaveParams_t* continuousWave );
-
-/*!
  * \brief Computes new datarate according to the given offset
  *
  * \param [IN] downlinkDwellTime Downlink dwell time configuration. 0: No limit, 1: 400ms
@@ -496,8 +433,12 @@ uint8_t RegionUS915ApplyDrOffset( uint8_t downlinkDwellTime, int8_t dr, int8_t d
  *
  * \param [IN] rxBeaconSetup Pointer to the function parameters
  */
- void RegionUS915RxBeaconSetup( RxBeaconSetup_t* rxBeaconSetup, uint8_t* outDr );
+void RegionUS915RxBeaconSetup( RxBeaconSetup_t* rxBeaconSetup, uint8_t* outDr );
 
 /*! \} defgroup REGIONUS915 */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __REGION_US915_H__

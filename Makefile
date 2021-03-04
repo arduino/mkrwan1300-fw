@@ -45,7 +45,7 @@ DEFINES = \
 	  -DREGION_KR920 \
 	  -DREGION_US915 \
 	  -DREGION_RU864 \
-	  -DREGION_AU915_TTN
+	  -DSOFT_SE
 
 INCLUDES = \
      -IProjects/B-L072Z-LRWAN1/Applications/LoRa/AT_Slave/LoRaWAN/App/LoRaWAN/App/inc \
@@ -57,7 +57,8 @@ INCLUDES = \
 	   -IDrivers/CMSIS/Device/ST/STM32L0xx/Include \
 	   -IDrivers/CMSIS/Include \
 	   -IMiddlewares/Third_Party/LoRaWAN/Crypto \
-	   -IMiddlewares/Third_Party/LoRaWAN/Mac \
+     -IMiddlewares/Third_Party/LoRaWAN/Mac \
+     -IMiddlewares/Third_Party/LoRaWAN/Mac/region \
 	   -IMiddlewares/Third_Party/LoRaWAN/Phy \
 	   -IMiddlewares/Third_Party/LoRaWAN/Utilities \
 	   -IMiddlewares/Third_Party/LoRaWAN/Core \
@@ -92,6 +93,7 @@ OBJS = \
        Drivers/BSP/Components/sx1276/sx1276.o \
        Drivers/BSP/CMWX1ZZABZ-0xx/mlm32l07x01.o \
        Drivers/BSP/B-L072Z-LRWAN1/b-l072z-lrwan1.o \
+       Middlewares/Third_Party/LoRaWAN/Crypto/soft-se-hal.o \
        Middlewares/Third_Party/LoRaWAN/Crypto/soft-se.o \
        Middlewares/Third_Party/LoRaWAN/Crypto/aes.o \
        Middlewares/Third_Party/LoRaWAN/Crypto/cmac.o \
@@ -102,8 +104,11 @@ OBJS = \
        Middlewares/Third_Party/LoRaWAN/Mac/region/Region.o \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionAS923.o \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionAU915.o \
-       Middlewares/Third_Party/LoRaWAN/Mac/region/RegionAU915_TTN.o \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionCN470.o \
+       Middlewares/Third_Party/LoRaWAN/Mac/region/RegionCN470A20.o \
+       Middlewares/Third_Party/LoRaWAN/Mac/region/RegionCN470A26.o \
+       Middlewares/Third_Party/LoRaWAN/Mac/region/RegionCN470B20.o \
+       Middlewares/Third_Party/LoRaWAN/Mac/region/RegionCN470B26.o \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionCN779.o \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionCommon.o \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionEU433.o \
@@ -112,6 +117,7 @@ OBJS = \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionKR920.o \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionUS915.o \
        Middlewares/Third_Party/LoRaWAN/Mac/region/RegionRU864.o \
+       Middlewares/Third_Party/LoRaWAN/Mac/region/RegionBaseUS.o \
        Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacParser.o \
        Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.o \
        Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.o \
@@ -122,7 +128,6 @@ OBJS = \
        Middlewares/Third_Party/LoRaWAN/Utilities/trace.o \
        Middlewares/Third_Party/LoRaWAN/Utilities/queue.o \
        Middlewares/Third_Party/LoRaWAN/Utilities/systime.o \
-       Middlewares/Third_Party/LoRaWAN/Patterns/Basic/lora-test.o \
        Projects/B-L072Z-LRWAN1/Applications/LoRa/AT_Slave/LoRaWAN/App/src/at.o \
        Projects/B-L072Z-LRWAN1/Applications/LoRa/AT_Slave/LoRaWAN/App/src/command.o \
        Projects/B-L072Z-LRWAN1/Applications/LoRa/AT_Slave/LoRaWAN/App/src/debug.o \

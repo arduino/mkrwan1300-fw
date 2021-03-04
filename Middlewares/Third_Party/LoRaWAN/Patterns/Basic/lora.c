@@ -242,10 +242,12 @@ static void McpsIndication( McpsIndication_t *mcpsIndication )
     // Check Rssi
     // Check Snr
     // Check RxSlot
+#ifdef CERTIFICATION
     if (certif_running() == true )
     {
       certif_DownLinkIncrement( );
     }
+#endif
 
     if( mcpsIndication->RxData == true )
     {
@@ -312,10 +314,12 @@ static void MlmeConfirm( MlmeConfirm_t *mlmeConfirm )
             {
                 // Check DemodMargin
                 // Check NbGateways
+                #ifdef CERTIFICATION
                 if (certif_running() == true )
                 {
                      certif_linkCheck( mlmeConfirm);
                 }
+                #endif
             }
             break;
         }
@@ -643,10 +647,12 @@ bool LORA_send(lora_AppData_t* AppData, LoraConfirm_t IsTxConfirmed)
     LoRaMacTxInfo_t txInfo;
   
     /*if certification test are on going, application data is not sent*/
+    #ifdef CERTIFICATION
     if (certif_running() == true)
     {
       return false;
     }
+    #endif
     
     if( LoRaMacQueryTxPossible( AppData->BuffSize, &txInfo ) != LORAMAC_STATUS_OK )
     {

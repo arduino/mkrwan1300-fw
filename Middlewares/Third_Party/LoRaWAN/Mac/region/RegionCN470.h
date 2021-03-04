@@ -37,6 +37,11 @@
 #ifndef __REGION_CN470_H__
 #define __REGION_CN470_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "region/Region.h"
 
 /*!
@@ -47,7 +52,7 @@
 /*!
  * Minimal datarate that can be used by the node
  */
-#define CN470_TX_MIN_DATARATE                       DR_0
+#define CN470_TX_MIN_DATARATE                       DR_1
 
 /*!
  * Maximal datarate that can be used by the node
@@ -57,7 +62,7 @@
 /*!
  * Minimal datarate that can be used by the node
  */
-#define CN470_RX_MIN_DATARATE                       DR_0
+#define CN470_RX_MIN_DATARATE                       DR_1
 
 /*!
  * Maximal datarate that can be used by the node
@@ -67,7 +72,7 @@
 /*!
  * Default datarate used by the node
  */
-#define CN470_DEFAULT_DATARATE                      DR_0
+#define CN470_DEFAULT_DATARATE                      DR_1
 
 /*!
  * Minimal Rx1 receive datarate offset
@@ -77,27 +82,22 @@
 /*!
  * Maximal Rx1 receive datarate offset
  */
-#define CN470_MAX_RX1_DR_OFFSET                     3
-
-/*!
- * Default Rx1 receive datarate offset
- */
-#define CN470_DEFAULT_RX1_DR_OFFSET                 0
+#define CN470_MAX_RX1_DR_OFFSET                     5
 
 /*!
  * Minimal Tx output power that can be used by the node
  */
-#define CN470_MIN_TX_POWER                        TX_POWER_7
+#define CN470_MIN_TX_POWER                          TX_POWER_7
 
 /*!
  * Maximal Tx output power that can be used by the node
  */
-#define CN470_MAX_TX_POWER                        TX_POWER_0
+#define CN470_MAX_TX_POWER                          TX_POWER_0
 
 /*!
  * Default Tx output power used by the node
  */
-#define CN470_DEFAULT_TX_POWER                    TX_POWER_0
+#define CN470_DEFAULT_TX_POWER                      TX_POWER_0
 
 /*!
  * Default Max EIRP
@@ -110,16 +110,6 @@
 #define CN470_DEFAULT_ANTENNA_GAIN                  2.15f
 
 /*!
- * ADR Ack limit
- */
-#define CN470_ADR_ACK_LIMIT                         64
-
-/*!
- * ADR Ack delay
- */
-#define CN470_ADR_ACK_DELAY                         32
-
-/*!
  * Enabled or disabled the duty cycle
  */
 #define CN470_DUTY_CYCLE_ENABLED                    0
@@ -130,67 +120,18 @@
 #define CN470_MAX_RX_WINDOW                         3000
 
 /*!
- * Receive delay 1
- */
-#define CN470_RECEIVE_DELAY1                        1000
-
-/*!
- * Receive delay 2
- */
-#define CN470_RECEIVE_DELAY2                        2000
-
-/*!
- * Join accept delay 1
- */
-#define CN470_JOIN_ACCEPT_DELAY1                    5000
-
-/*!
- * Join accept delay 2
- */
-#define CN470_JOIN_ACCEPT_DELAY2                    6000
-
-/*!
- * Maximum frame counter gap
- */
-#define CN470_MAX_FCNT_GAP                          16384
-
-/*!
- * Ack timeout
- */
-#define CN470_ACKTIMEOUT                            2000
-
-/*!
- * Random ack timeout limits
- */
-#define CN470_ACK_TIMEOUT_RND                       1000
-
-/*!
- * Second reception window channel frequency definition.
- */
-#define CN470_RX_WND_2_FREQ                         505300000
-
-/*!
  * Second reception window channel datarate definition.
  */
-#define CN470_RX_WND_2_DR                           DR_0
+#define CN470_RX_WND_2_DR                           DR_1
+
+/*!
+ * Default uplink dwell time configuration
+ */
+#define CN470_DEFAULT_UPLINK_DWELL_TIME             0
 
 /*
  * CLASS B
  */
-/*!
- * Beacon frequency
- */
-#define CN470_BEACON_CHANNEL_FREQ                   508300000
-
-/*!
- * Beacon frequency channel stepwidth
- */
-#define CN470_BEACON_CHANNEL_STEPWIDTH              200000
-
-/*!
- * Number of possible beacon channels
- */
-#define CN470_BEACON_NB_CHANNELS                    8
 
 /*!
  * Payload size of a beacon frame
@@ -200,7 +141,7 @@
 /*!
  * Size of RFU 1 field
  */
-#define CN470_RFU1_SIZE                             3
+#define CN470_RFU1_SIZE                             2
 
 /*!
  * Size of RFU 2 field
@@ -229,9 +170,9 @@
 
 /*!
  * Band 0 definition
- * { DutyCycle, TxMaxPower, LastJoinTxDoneTime, LastTxDoneTime, TimeOff }
+ * Band = { DutyCycle, TxMaxPower, LastBandUpdateTime, LastMaxCreditAssignTime, TimeCredits, MaxTimeCredits, ReadyForTransmission }
  */
-#define CN470_BAND0                                 { 1, CN470_MAX_TX_POWER, 0, 0, 0 } //  100.0 %
+#define CN470_BAND0                                 { 1, CN470_MAX_TX_POWER, 0, 0, 0, 0, 0 } //  100.0 %
 
 /*!
  * Defines the first channel for RX window 1 for CN470 band
@@ -248,25 +189,68 @@
  */
 #define CN470_STEPWIDTH_RX1_CHANNEL                 ( (uint32_t) 200000 )
 
+#define CN470_DEFAULT_DR_RANGE                      { .Value = ( CN470_TX_MAX_DATARATE << 4 ) | CN470_TX_MIN_DATARATE }
+
+#define CN470_COMMON_JOIN_CHANNELS \
+{ \
+    { .Frequency = 470900000, .Rx1Frequency = 484500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 472500000, .Rx1Frequency = 486100000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 474100000, .Rx1Frequency = 487700000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 475700000, .Rx1Frequency = 489300000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 504100000, .Rx1Frequency = 490900000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 505700000, .Rx1Frequency = 492500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 507300000, .Rx1Frequency = 494100000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 508900000, .Rx1Frequency = 495700000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+\
+    { .Frequency = 479900000, .Rx1Frequency = 479900000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 499900000, .Rx1Frequency = 499900000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+\
+    { .Frequency = 470300000, .Rx1Frequency = 492500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 472300000, .Rx1Frequency = 492500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 474300000, .Rx1Frequency = 492500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 476300000, .Rx1Frequency = 492500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 478300000, .Rx1Frequency = 492500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+\
+    { .Frequency = 480300000, .Rx1Frequency = 502500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 482300000, .Rx1Frequency = 502500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 484300000, .Rx1Frequency = 502500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 486300000, .Rx1Frequency = 502500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+    { .Frequency = 488300000, .Rx1Frequency = 502500000, CN470_DEFAULT_DR_RANGE, .Band = 0 }, \
+}
+
+#define CN470_COMMON_JOIN_CHANNELS_SIZE             20
+
+#define CN470_JOIN_CHANNELS                         { 0xFFFF, 0x000F }
+
 /*!
  * Data rates table definition
  */
-static const uint8_t DataratesCN470[]  = { 12, 11, 10,  9,  8,  7 };
+static const uint8_t DataratesCN470[]  = { 12, 11, 10,  9,  8,  7, 7, 50 };
 
 /*!
  * Bandwidths table definition in Hz
  */
-static const uint32_t BandwidthsCN470[] = { 125000, 125000, 125000, 125000, 125000, 125000 };
+static const uint32_t BandwidthsCN470[] = { 125000, 125000, 125000, 125000, 125000, 125000, 500000, 0 };
+
+/*!
+ * Up/Down link data rates offset definition
+ */
+static const int8_t DatarateOffsetsCN470[8][6] =
+{
+    { DR_0, DR_0, DR_0, DR_0, DR_0, DR_0 }, // DR_0
+    { DR_1, DR_1, DR_1, DR_1, DR_1, DR_1 }, // DR_1
+    { DR_2, DR_1, DR_1, DR_1, DR_1, DR_1 }, // DR_2
+    { DR_3, DR_2, DR_1, DR_1, DR_1, DR_1 }, // DR_3
+    { DR_4, DR_3, DR_2, DR_1, DR_1, DR_1 }, // DR_4
+    { DR_5, DR_4, DR_3, DR_2, DR_1, DR_1 }, // DR_5
+    { DR_6, DR_5, DR_4, DR_3, DR_2, DR_1 }, // DR_6
+    { DR_7, DR_6, DR_5, DR_4, DR_3, DR_2 }, // DR_7
+};
 
 /*!
  * Maximum payload with respect to the datarate index. Cannot operate with repeater.
  */
-static const uint8_t MaxPayloadOfDatarateCN470[] = { 51, 51, 51, 115, 242, 242 };
-
-/*!
- * Maximum payload with respect to the datarate index. Can operate with repeater.
- */
-static const uint8_t MaxPayloadOfDatarateRepeaterCN470[] = { 51, 51, 51, 115, 222, 222 };
+static const uint8_t MaxPayloadOfDatarateCN470[] = { 0, 23, 86, 184, 242, 242, 242, 242 };
 
 /*!
  * \brief The function gets a value of a specific phy attribute.
@@ -290,15 +274,6 @@ void RegionCN470SetBandTxDone( SetBandTxDoneParams_t* txDone );
  * \param [IN] type Sets the initialization type.
  */
 void RegionCN470InitDefaults( InitDefaultsParams_t* params );
-
-/*!
- * \brief Returns a pointer to the internal context and its size.
- *
- * \param [OUT] params Pointer to the function parameters.
- *
- * \retval      Points to a structure where the module store its non-volatile context.
- */
-void* RegionCN470GetNvmCtx( GetNvmCtxParams_t* params );
 
 /*!
  * \brief Verifies a parameter.
@@ -392,7 +367,7 @@ uint8_t RegionCN470RxParamSetupReq( RxParamSetupReqParams_t* rxParamSetupReq );
  *
  * \retval Returns the status of the operation, according to the LoRaMAC specification.
  */
-uint8_t RegionCN470NewChannelReq( NewChannelReqParams_t* newChannelReq );
+int8_t RegionCN470NewChannelReq( NewChannelReqParams_t* newChannelReq );
 
 /*!
  * \brief The function processes a TX ParamSetup Request.
@@ -412,7 +387,7 @@ int8_t RegionCN470TxParamSetupReq( TxParamSetupReqParams_t* txParamSetupReq );
  *
  * \retval Returns the status of the operation, according to the LoRaMAC specification.
  */
-uint8_t RegionCN470DlChannelReq( DlChannelReqParams_t* dlChannelReq );
+int8_t RegionCN470DlChannelReq( DlChannelReqParams_t* dlChannelReq );
 
 /*!
  * \brief Alternates the datarate of the channel for the join request.
@@ -422,13 +397,6 @@ uint8_t RegionCN470DlChannelReq( DlChannelReqParams_t* dlChannelReq );
  * \retval Datarate to apply.
  */
 int8_t RegionCN470AlternateDr( int8_t currentDr, AlternateDrType_t type );
-
-/*!
- * \brief Calculates the back-off time.
- *
- * \param [IN] calcBackOff Pointer to the function parameters.
- */
-void RegionCN470CalcBackOff( CalcBackOffParams_t* calcBackOff );
 
 /*!
  * \brief Searches and set the next random available channel
@@ -463,13 +431,6 @@ LoRaMacStatus_t RegionCN470ChannelAdd( ChannelAddParams_t* channelAdd );
 bool RegionCN470ChannelsRemove( ChannelRemoveParams_t* channelRemove  );
 
 /*!
- * \brief Sets the radio into continuous wave mode.
- *
- * \param [IN] continuousWave Pointer to the function parameters.
- */
-void RegionCN470SetContinuousWave( ContinuousWaveParams_t* continuousWave );
-
-/*!
  * \brief Computes new datarate according to the given offset
  *
  * \param [IN] downlinkDwellTime Downlink dwell time configuration. 0: No limit, 1: 400ms
@@ -490,5 +451,9 @@ uint8_t RegionCN470ApplyDrOffset( uint8_t downlinkDwellTime, int8_t dr, int8_t d
  void RegionCN470RxBeaconSetup( RxBeaconSetup_t* rxBeaconSetup, uint8_t* outDr );
 
 /*! \} defgroup REGIONCN470 */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __REGION_CN470_H__

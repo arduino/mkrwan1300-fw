@@ -130,6 +130,13 @@ static LoRaMacCallback_t LoRaMacCallbacks;
 static MibRequestConfirm_t mibReq;
 static LoRaMacRegion_t LoRaRegion;
 
+#ifndef CERTIFICATION
+bool certif_running() { return false; }
+void certif_DownLinkIncrement( ) {}
+void certif_linkCheck(MlmeConfirm_t *mlmeConfirm) {}
+void certif_rx( McpsIndication_t *mcpsIndication, MlmeReqJoin_t* JoinParameters) {}
+#endif
+
 static LoRaMainCallback_t *LoRaMainCallbacks;
 /*!
  * \brief   MCPS-Confirm event function
@@ -601,7 +608,6 @@ LoraErrorStatus LORA_send(lora_AppData_t *AppData, LoraConfirm_t IsTxConfirmed)
       mcpsReq.Req.Confirmed.fPort = AppData->Port;
       mcpsReq.Req.Confirmed.fBufferSize = AppData->BuffSize;
       mcpsReq.Req.Confirmed.fBuffer = AppData->Buff;
-      mcpsReq.Req.Confirmed.NbTrials = 8;
       mcpsReq.Req.Confirmed.Datarate = lora_config_tx_datarate_get() ;
     }
   }
@@ -822,7 +828,7 @@ void lora_config_otaa_set(LoraState_t otaa)
     abpLrWanVersion.Fields.Major    = 1;
     abpLrWanVersion.Fields.Minor    = 0;
     abpLrWanVersion.Fields.Revision = 3;
-    abpLrWanVersion.Fields.Rfu      = 0;
+    abpLrWanVersion.Fields.Patch    = 0;
 
     mibReq.Type = MIB_ABP_LORAWAN_VERSION;
     mibReq.Param.AbpLrWanVersion = abpLrWanVersion;
