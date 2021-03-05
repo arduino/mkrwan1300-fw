@@ -61,4 +61,6 @@ All the code maintains its original license.
 | AT+TTLRA     | Starts RF Tx LORA test |
 | AT+TTONE     | Starts RF Tone test |
 | AT+UTX       | send without confirmation |
-| AT+VER       | Get the version of the AT_Slave FW|  |
+| AT+VER       | Get the version of the AT_Slave FW|
+| AT+CHANMASK  | Gets the current region's channel mask, note this is reset when changing regions |
+| AT+CHANDEFMASK | Gets the current region's default mask, note this is reset when changing regions |  |
