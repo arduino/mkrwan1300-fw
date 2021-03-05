@@ -127,6 +127,8 @@ typedef enum eATEerror
 #define AT_TCONF      "+TCONF"
 #define AT_TOFF       "+TOFF"
 #define AT_CERTIF     "+CERTIF"
+#define AT_CHANMASK   "+CHANMASK"
+#define AT_CHANDEFMASK "+CHANDEFMASK"
 
 /* Exported functions ------------------------------------------------------- */
 
@@ -671,7 +673,35 @@ ATEerror_t at_test_get_lora_config(const char *param);
  * @retval AT_OK
  */
 ATEerror_t at_Certif( const char *param );
-  
+
+/**
+ * @brief  Gets the current region's channel mask, note this is reset when changing regions
+ * @param  String parameter
+ * @retval AT_OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_ChannelMask_get(const char *param);
+
+/**
+ * @brief  Sets the current region's channel mask, note this is reset when changing regions
+ * @param  String parameter
+ * @retval AT_OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_ChannelMask_set(const char *param);
+
+/**
+ * @brief  Gets the current region's default mask, note this is reset when changing regions
+ * @param  String parameter
+ * @retval AT_OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_ChannelDefaultMask_get(const char *param);
+
+/**
+ * @brief  Sets the current region's channel mask, note this is reset when changing regions
+ * @param  String parameter
+ * @retval AT_OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_ChannelDefaultMask_set(const char *param);
+
 #ifdef __cplusplus
 }
 #endif

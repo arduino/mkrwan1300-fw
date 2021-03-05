@@ -633,6 +633,28 @@ static const struct ATCommand_s ATCommand[] =
     .set = at_return_error,
     .run = at_Certif,
   },
+
+  {
+    .string = AT_CHANMASK,
+    .size_string = sizeof(AT_CHANMASK) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_CHANMASK ": Config the region's channel mask for the session\r\n",
+#endif
+    .get = at_ChannelMask_get,
+    .set = at_ChannelMask_set,
+    .run = at_return_error,
+  },
+
+  {
+    .string = AT_CHANDEFMASK,
+    .size_string = sizeof(AT_CHANDEFMASK) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_CHANDEFMASK ": Config the region's channel default mask for the session\r\n",
+#endif
+    .get = at_ChannelDefaultMask_get,
+    .set = at_ChannelDefaultMask_set,
+    .run = at_return_error,
+  },
 };
 
 
