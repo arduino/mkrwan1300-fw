@@ -269,6 +269,7 @@ static void MlmeConfirm(MlmeConfirm_t *mlmeConfirm)
       {
         // Status is OK, node has joined the network
         LoRaMainCallbacks->LORA_HasJoined();
+        lora_config_tx_datarate_set(lora_config.TxDatarate);
 #ifdef LORAMAC_CLASSB_ENABLED
 #if defined( USE_DEVICE_TIMING )
         LORA_DeviceTimeReq();
