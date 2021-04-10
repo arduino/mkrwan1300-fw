@@ -891,7 +891,11 @@ int16_t lora_config_rssi_get(void)
 
 void lora_config_tx_datarate_set(int8_t TxDataRate)
 {
-  lora_config.TxDatarate = TxDataRate;
+  mibReq.Type = MIB_CHANNELS_DATARATE;
+  mibReq.Param.ChannelsDatarate = TxDataRate;
+  if (LoRaMacMibSetRequestConfirm(&mibReq) != LORAMAC_STATUS_PARAMETER_INVALID) {
+	lora_config.TxDatarate = TxDataRate;
+  }
 }
 
 int8_t lora_config_tx_datarate_get(void)
