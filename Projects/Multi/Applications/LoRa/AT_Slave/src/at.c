@@ -669,6 +669,7 @@ ATEerror_t at_Rx2Delay_get(const char *param)
   mib.Type = MIB_RECEIVE_DELAY_2;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+  AT_PRINTF("+OK=");
   print_u(mib.Param.ReceiveDelay2);
 
   return AT_OK;
@@ -891,7 +892,8 @@ ATEerror_t at_NetworkJoinStatus(const char *param)
   CHECK_STATUS(status);
 
   AT_PRINTF("+OK=");
-  print_d(mibReq.Param.IsNetworkJoined ? 1 : 0);
+  print_d((mibReq.Param.IsNetworkJoined) ? 1 : 0);
+
   return AT_OK;
 }
 
@@ -1090,30 +1092,35 @@ ATEerror_t at_ack_set(const char *param)
 
 ATEerror_t at_ack_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_d (((lora_config_reqack_get() == ENABLE) ? 1 : 0));
   return AT_OK;
 }
 
 ATEerror_t at_isack_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_d(((lora_config_isack_get() == ENABLE) ? 1 : 0));
   return AT_OK;
 }
 
 ATEerror_t at_snr_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_u(lora_config_snr_get());
   return AT_OK;
 }
 
 ATEerror_t at_rssi_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_d(lora_config_rssi_get());
   return AT_OK;
 }
 
 ATEerror_t at_bat_get(const char *param)
 {
+  AT_PRINTF("+OK=");
   print_u(HW_GetBatteryLevel());
   return AT_OK;
 }
