@@ -888,14 +888,11 @@ ATEerror_t at_NetworkJoinStatus(const char *param)
 
   mibReq.Type = MIB_NETWORK_JOINED;
   status = LoRaMacMibGetRequestConfirm(&mibReq);
+  CHECK_STATUS(status);
 
-  if (status == LORAMAC_STATUS_OK)
-  {
-	AT_PRINTF("+OK=");
-    print_d(mibReq.Param.IsNetworkJoined ? 1 : 0);
-    return AT_OK;
-  }
-  return AT_ERROR;
+  AT_PRINTF("+OK=");
+  print_d(mibReq.Param.IsNetworkJoined ? 1 : 0);
+  return AT_OK;
 }
 
 ATEerror_t at_SendBinary(const char *param)
