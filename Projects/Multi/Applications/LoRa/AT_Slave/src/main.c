@@ -66,7 +66,8 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
 #include "version.h"
 #include "command.h"
 #include "at.h"
-#include "lora.h"
+//#include "lora.h"
+#include "sx1276.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
