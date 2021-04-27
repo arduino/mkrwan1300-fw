@@ -272,6 +272,11 @@ void SX1276BoardInit( LoRaBoardCallback_t *callbacks );
 uint32_t SX1276Init( RadioEvents_t *events );
 
 /*!
+ * \brief Resets the SX1276
+ */
+void SX1276Reset( void );
+
+/*!
  * \brief Sets the SX1276 operating mode
  *
  * \param [IN] opMode New operating mode
