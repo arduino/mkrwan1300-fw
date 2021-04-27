@@ -333,9 +333,65 @@ uint8_t *lora_config_appeui_get(void);
 /**
   * @brief  Set Application EUI
   * @param  AppEUI
-  * @retval Nonoe
+  * @retval None
   */
 void lora_config_appeui_set(uint8_t appeui[8]);
+
+/**
+  * @brief  Get device address
+  * @param  None
+  * @retval DevAddr
+  */
+uint32_t lora_config_devaddr_get(void);
+
+/**
+  * @brief  Set device address
+  * @param  DevAddr
+  * @retval None
+  */
+void lora_config_devaddr_set(uint32_t devaddr);
+
+/**
+  * @brief  Set network id
+  * @param  NetId
+  * @retval None
+  */
+void lora_config_networkid_set(uint32_t networkid);
+
+/**
+  * @brief  Get network id
+  * @param  None
+  * @retval NetId
+  */
+uint32_t lora_config_networkid_get(void);
+
+/**
+  * @brief  Get network session key
+  * @param  None
+  * @retval NwkSKey
+  */
+uint8_t *lora_config_nwkskey_get(void);
+
+/**
+  * @brief  Set network session key
+  * @param  NwkSKey
+  * @retval None
+  */
+void lora_config_nwkskey_set(uint8_t nwkSKey[16]);
+
+/**
+  * @brief  Get application session key
+  * @param  None
+  * @retval AppSKey
+  */
+uint8_t *lora_config_appskey_get(void);
+
+/**
+  * @brief  Set application session key
+  * @param  AppSKey
+  * @retval None
+  */
+void lora_config_appskey_set(uint8_t appskey[16]);
 
 /**
   * @brief  Get Application Key
