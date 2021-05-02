@@ -64,6 +64,7 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
 #include "LoRaMac.h"
 #include "lora.h"
 #include "tiny_sscanf.h"
+#include "at.h"
 
 static lora_configuration_t lora_config = 
 {
@@ -880,7 +881,7 @@ void lora_fsm( LoRaMacRegion_t region )
     }
     case DEVICE_STATE_JOINED:
     {
-      PRINTF("+EVENT=1,1\r");
+      PRINTF(AT_EVENT AT_EQ "1,1\r");
       DeviceState = DEVICE_STATE_SLEEP;
       break;
     }

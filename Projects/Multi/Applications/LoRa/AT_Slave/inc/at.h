@@ -130,6 +130,7 @@ typedef enum eATEerror
 #define AT_CHANMASK   "+CHANMASK"
 #define AT_CHANDEFMASK "+CHANDEFMASK"
 
+#define AT_EVENT	  "+EVENT"
 #define AT_EQ		  "="
 
 /* Exported functions ------------------------------------------------------- */
