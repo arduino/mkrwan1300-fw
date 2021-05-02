@@ -211,7 +211,8 @@ ATEerror_t at_AppEUI_set(const char *param)
 ATEerror_t at_DevAddr_set(const char *param)
 {
 	uint32_t DevAddr;
-	sscanf_uint32_as_hhx(param, &DevAddr);
+	if (sscanf_uint32_as_hhx(param, &DevAddr) != 4)
+			return AT_PARAM_ERROR;
 
 	lora_config_devaddr_set(DevAddr);
 	return AT_OK;
@@ -235,7 +236,8 @@ ATEerror_t at_NetworkID_get(const char *param)
 ATEerror_t at_NetworkID_set(const char *param)
 {
   uint32_t NetworkID;
-  sscanf_uint32_as_hhx(param, &NetworkID);
+  if (sscanf_uint32_as_hhx(param, &NetworkID) != 4)
+			return AT_PARAM_ERROR;
 
   lora_config_networkid_set(NetworkID);
   return AT_OK;
