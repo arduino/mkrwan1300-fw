@@ -457,7 +457,7 @@ ATEerror_t at_TransmitPower_set(const char *param)
   uint8_t ignored;
 
   mib.Type = MIB_CHANNELS_TX_POWER;
-  if (tiny_sscanf(param, "%hhu,%hhu", &ignored, &mib.Param.ChannelsTxPower) != 1)
+  if (tiny_sscanf(param, "%hhu,%hhu", &ignored, &mib.Param.ChannelsTxPower) != 2)
   {
     return AT_PARAM_ERROR;
   }
