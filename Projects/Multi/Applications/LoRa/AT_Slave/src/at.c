@@ -402,6 +402,13 @@ ATEerror_t at_ChannelDefaultMask_set(const char *param)
   return AT_OK;
 }
 
+ATEerror_t at_MaxSize_get (const char *param)
+{
+  AT_PRINTF(AT_MSIZE AT_EQ);
+  print_u(lora_config_max_size_get());
+  return AT_OK;
+}
+
 ATEerror_t at_ADR_get(const char *param)
 {
   MibRequestConfirm_t mib;

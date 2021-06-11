@@ -457,6 +457,13 @@ void lora_config_application_port_set(uint8_t application_port);
 uint8_t lora_config_application_port_get(void);
 
 /**
+ * @brief  Get the maximum payload size for tx/rx
+ * @param  None
+ * @retval Maximum size in bytes (<255)
+ */
+uint8_t lora_config_max_size_get(void);
+
+/**
  * @brief  Launch LoraWan certification tests
  * @param  None
  * @retval The application port

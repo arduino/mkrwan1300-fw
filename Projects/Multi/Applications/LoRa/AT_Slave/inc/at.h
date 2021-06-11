@@ -129,6 +129,7 @@ typedef enum eATEerror
 #define AT_CERTIF     "+CERTIF"
 #define AT_CHANMASK   "+CHANMASK"
 #define AT_CHANDEFMASK "+CHANDEFMASK"
+#define AT_MSIZE	  "+MSIZE"
 
 #define AT_EVENT	  "+EVENT"
 #define AT_EQ		  "="
@@ -704,6 +705,13 @@ ATEerror_t at_ChannelDefaultMask_get(const char *param);
  * @retval AT_OK, or an appropriate AT_xxx error code
  */
 ATEerror_t at_ChannelDefaultMask_set(const char *param);
+
+/**
+ * @brief  Gets the current maximum send and receive buffer size
+ * @param  String parameter
+ * @retval AT_OK, or an appropriate AT_xxx error code
+ */
+ATEerror_t at_MaxSize_get(const char *param);
 
 #ifdef __cplusplus
 }

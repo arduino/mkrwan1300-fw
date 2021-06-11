@@ -1088,4 +1088,11 @@ uint8_t lora_config_application_port_get(void)
   return lora_config.application_port;
 }
 
+uint8_t lora_config_max_size_get(void)
+{
+  LoRaMacTxInfo_t txInfo;
+  (void)LoRaMacQueryTxPossible( 0, &txInfo );
+  return txInfo.MaxPossiblePayload;
+}
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
