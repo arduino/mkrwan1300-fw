@@ -125,7 +125,7 @@ static uint32_t DevAddr = LORAWAN_DEVICE_ADDRESS;
 /*!
  * User application data buffer size
  */
-#define LORAWAN_APP_DATA_BUFF_SIZE                           64
+#define LORAWAN_APP_DATA_BUFF_SIZE		242	//   max length for transmission LoRaWan 1.0.4
 
 /*!
  * User application data

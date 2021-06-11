@@ -68,6 +68,7 @@
  * @brief Max size of the data that can be received
  */
 #define MAX_RECEIVED_DATA 255
+#define MAX_SEND_DATA	242		// LoRaWan spec 1.0.4
 
 /* Private macro -------------------------------------------------------------*/
 /**
@@ -986,7 +987,7 @@ ATEerror_t at_SendV2(const char *param)
   {
     return AT_PARAM_ERROR;
   }
-  uint8_t data[64];
+  uint8_t data[MAX_SEND_DATA];
   int i = 0;
   // grab other #len bytes from the serial buffer
   while (i<length) {
@@ -1013,7 +1014,7 @@ ATEerror_t at_SendV2Confirmation(const char *param)
   {
 	return AT_PARAM_ERROR;
   }
-  uint8_t data[64];
+  uint8_t data[MAX_SEND_DATA];
   int i = 0;
   // grab other #len bytes from the serial buffer
   while (i<length) {
