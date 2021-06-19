@@ -1095,4 +1095,12 @@ uint8_t lora_config_max_size_get(void)
   return txInfo.MaxPossiblePayload;
 }
 
+int8_t lora_config_data_rate_get(void){
+	return LoRaParamInit->TxDatarate;
+}
+
+void lora_config_data_rate_set(int8_t data_rate){
+	LoRaParamInit->TxDatarate = data_rate;
+}
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

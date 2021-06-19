@@ -463,6 +463,21 @@ uint8_t lora_config_application_port_get(void);
  */
 uint8_t lora_config_max_size_get(void);
 
+
+/**
+ * @brief  Get the data rate for non-ADR send
+ * @param  None
+ * @retval Maximum size in bytes (<255)
+ */
+int8_t lora_config_data_rate_get(void);
+
+/**
+ * @brief  Set the data rate for non-ADR send
+ * @param  The data rate to set
+ * @retval None
+ */
+void lora_config_data_rate_set(int8_t data_rate);
+
 /**
  * @brief  Launch LoraWan certification tests
  * @param  None

@@ -438,6 +438,13 @@ ATEerror_t at_ADR_set(const char *param)
       mib.Param.AdrEnable = param[0] - '0';
       status = LoRaMacMibSetRequestConfirm(&mib);
       CHECK_STATUS(status);
+
+      if (!mib.Param.AdrEnable){
+    	  mib.Type = MIB_CHANNELS_DEFAULT_DATARATE;
+    	  mib.Param.ChannelsDatarate = lora_config_data_rate_get(); // apply non-ADR data rate as default to MAC layer
+    	  status = LoRaMacMibSetRequestConfirm(&mib);
+    	  CHECK_STATUS(status);
+      }
       break;
     default:
       return AT_PARAM_ERROR;
@@ -482,10 +489,19 @@ ATEerror_t at_DataRate_get(const char *param)
   MibRequestConfirm_t mib;
   LoRaMacStatus_t status;
 
-  mib.Type = MIB_CHANNELS_DATARATE;
-
+  mib.Type = MIB_ADR;
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
+
+  if (mib.Param.AdrEnable){
+	  mib.Type = MIB_CHANNELS_DATARATE;
+
+	  status = LoRaMacMibGetRequestConfirm(&mib);
+	  CHECK_STATUS(status);
+  }
+  else
+	  mib.Param.ChannelsDatarate = lora_config_data_rate_get();
+
   AT_PRINTF(AT_DR AT_EQ);
   print_d(mib.Param.ChannelsDatarate);
 
@@ -496,15 +512,33 @@ ATEerror_t at_DataRate_set(const char *param)
 {
   MibRequestConfirm_t mib;
   LoRaMacStatus_t status;
+  uint8_t new_dr=0;
 
-  mib.Type = MIB_CHANNELS_DATARATE;
-  if (tiny_sscanf(param, "%hhu", &mib.Param.ChannelsDatarate) != 1)
+
+  if (tiny_sscanf(param, "%hhu", &new_dr) != 1)
   {
-    return AT_PARAM_ERROR;
+	return AT_PARAM_ERROR;
   }
-  status = LoRaMacMibSetRequestConfirm(&mib);
+
+  mib.Type = MIB_ADR;
+  status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
 
+  if (!mib.Param.AdrEnable){
+	  mib.Type = MIB_CHANNELS_DATARATE;
+	  mib.Param.ChannelsDatarate = new_dr;
+	  status = LoRaMacMibSetRequestConfirm(&mib);
+	  CHECK_STATUS(status);
+  }
+  else {
+	  // Uses MIB_CHANNELS_DEFAULT_DATARATE to test for TX possible with non ADR
+	  mib.Type = MIB_CHANNELS_DEFAULT_DATARATE;
+	  mib.Param.ChannelsDatarate = new_dr;
+	  status = LoRaMacMibSetRequestConfirm(&mib);
+	  CHECK_STATUS(status);
+	  // Set lora_config reference
+	  lora_config_data_rate_set((int8_t)new_dr);
+  }
   return AT_OK;
 }
 
