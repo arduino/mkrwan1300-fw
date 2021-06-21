@@ -524,7 +524,7 @@ ATEerror_t at_DataRate_set(const char *param)
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
 
-  if (!mib.Param.AdrEnable){
+  if (mib.Param.AdrEnable){
 	  mib.Type = MIB_CHANNELS_DATARATE;
 	  mib.Param.ChannelsDatarate = new_dr;
 	  status = LoRaMacMibSetRequestConfirm(&mib);
