@@ -23,13 +23,15 @@ All the code maintains its original license.
 | AT+CERTIF    | Set the module in LoraWan Certification Mode |
 | AT+CFM       | Get or Set the confirmation mode (0-1) |
 | AT+CFS       | Get confirmation status of the last AT+SEND (0-1) |
+| AT+CHANMASK  | Gets the current region's channel mask, note this is reset when changing regions |
+| AT+CHANDEFMASK | Gets the current region's default mask, note this is reset when changing regions |  |
 | AT+CLASS     | Get or Set the Device Class |
 | AT+CTX       | send with confirmation |
 | AT+DEV       | Get the version of the AT_Slave FW |
 | AT+DEVADDR   | Get or Set the Device address |
 | AT+DEVEUI    | Get the Device EUI |
 | AT+DFORMAT   | select hex or binary format |
-| AT+DR        | Get or Set the Data Rate. (0-7 corresponding to DR_X) |
+| AT+DR        | Get or Set the Data Rate. (0-7 corresponding to DR_X). If ADR is off, it sets also the default data rate |
 | AT+DUTYCYCLE | Get or Set the ETSI Duty Cycle setting - 0=disable, 1=enable - Only for testing |
 | AT+FCD       | Get or Set the Frame Counter Downlink |
 | AT+FCU       | Get or Set the Frame Counter Uplink |
@@ -38,6 +40,7 @@ All the code maintains its original license.
 | AT+JN2DL     | Get or Set the Join Accept Delay between the end of the Tx and the Join Rx Window 2 in ms |
 | AT+JOIN      | Join network |
 | AT+MODE      | Get or Set the Network Join Mode. (0: ABP, 1: OTAA) |
+| AT+MSIZE     | Get the maximum send/receive size for the actual data rate |
 | AT+NJS       | Get the join status |
 | AT+NWK       | Get or Set the public network mode. (0: off, 1: on) |
 | AT+NWKSKEY   | Get or Set the Network Session Key |
@@ -62,5 +65,3 @@ All the code maintains its original license.
 | AT+TTONE     | Starts RF Tone test |
 | AT+UTX       | send without confirmation |
 | AT+VER       | Get the version of the AT_Slave FW|
-| AT+CHANMASK  | Gets the current region's channel mask, note this is reset when changing regions |
-| AT+CHANDEFMASK | Gets the current region's default mask, note this is reset when changing regions |  |
