@@ -655,6 +655,17 @@ static const struct ATCommand_s ATCommand[] =
     .set = at_ChannelDefaultMask_set,
     .run = at_return_error,
   },
+
+  {
+    .string = AT_MSIZE,
+    .size_string = sizeof(AT_MSIZE) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_MSIZE ": Retreives the actual maximum size for RX/TX messages\r\n",
+#endif
+    .get = at_MaxSize_get,
+    .set = at_return_error,
+    .run = at_return_error,
+  },
 };
 
 

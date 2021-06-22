@@ -64,6 +64,7 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
 #include "LoRaMac.h"
 #include "lora.h"
 #include "tiny_sscanf.h"
+#include "at.h"
 
 static lora_configuration_t lora_config = 
 {
@@ -124,7 +125,7 @@ static uint32_t DevAddr = LORAWAN_DEVICE_ADDRESS;
 /*!
  * User application data buffer size
  */
-#define LORAWAN_APP_DATA_BUFF_SIZE                           64
+#define LORAWAN_APP_DATA_BUFF_SIZE		242	//   max length for transmission LoRaWan 1.0.4
 
 /*!
  * User application data
@@ -240,6 +241,7 @@ static bool SendFrame( void )
     {
         // Send empty frame in order to flush MAC commands
         mcpsReq.Type = MCPS_UNCONFIRMED;
+        mcpsReq.Req.Unconfirmed.fPort = 0;
         mcpsReq.Req.Unconfirmed.fBuffer = NULL;
         mcpsReq.Req.Unconfirmed.fBufferSize = 0;
         mcpsReq.Req.Unconfirmed.Datarate = LoRaParamInit->TxDatarate;
@@ -652,20 +654,17 @@ LoRaMacStatus_t lora_join(void)
  */
 LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary, unsigned raw)
 {
+  if (raw == 1)
+	  goto on_raw;
+
   uint32_t appport;
 
-  if (raw == 1) {
-	  goto on_raw;
-  }
   /* read and set the application port */
   if (1 != tiny_sscanf(buf, "%u:", &appport))
   {
     PRINTF("AT+SEND without the application port");
     return LORAMAC_STATUS_PARAMETER_INVALID;
   }
-  
-  /* set the application port to send to */
-  lora_config_application_port_set(appport);
 
   /* skip the application port */
   while (('0' <= buf[0]) && (buf[0] <= '9'))
@@ -680,7 +679,10 @@ LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary, un
   }
   buf ++;
   bufSize --;
-  
+
+  /* set the application port to send to */
+  lora_config_application_port_set(appport);
+
 on_raw:
   OnSendEvent();
 
@@ -880,7 +882,7 @@ void lora_fsm( LoRaMacRegion_t region )
     }
     case DEVICE_STATE_JOINED:
     {
-      PRINTF("+EVENT=1,1\r");
+      PRINTF(AT_EVENT AT_EQ "1,1\r");
       DeviceState = DEVICE_STATE_SLEEP;
       break;
     }
@@ -1085,6 +1087,21 @@ void lora_config_application_port_set(uint8_t application_port)
 uint8_t lora_config_application_port_get(void)
 {
   return lora_config.application_port;
+}
+
+uint8_t lora_config_max_size_get(void)
+{
+  LoRaMacTxInfo_t txInfo;
+  (void)LoRaMacQueryTxPossible( 0, &txInfo );
+  return txInfo.MaxPossiblePayload;
+}
+
+int8_t lora_config_data_rate_get(void){
+	return LoRaParamInit->TxDatarate;
+}
+
+void lora_config_data_rate_set(int8_t data_rate){
+	LoRaParamInit->TxDatarate = data_rate;
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
