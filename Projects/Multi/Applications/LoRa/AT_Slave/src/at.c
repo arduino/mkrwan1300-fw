@@ -440,7 +440,7 @@ ATEerror_t at_ADR_set(const char *param)
       CHECK_STATUS(status);
 
       if (!mib.Param.AdrEnable){
-    	  mib.Type = MIB_CHANNELS_DEFAULT_DATARATE;
+    	  mib.Type = MIB_CHANNELS_DATARATE;
     	  mib.Param.ChannelsDatarate = lora_config_data_rate_get(); // apply non-ADR data rate as default to MAC layer
     	  status = LoRaMacMibSetRequestConfirm(&mib);
     	  CHECK_STATUS(status);
@@ -524,18 +524,12 @@ ATEerror_t at_DataRate_set(const char *param)
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
 
+  mib.Type = MIB_CHANNELS_DATARATE;
+  mib.Param.ChannelsDatarate = new_dr;
+  status = LoRaMacMibSetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+
   if (mib.Param.AdrEnable){
-	  mib.Type = MIB_CHANNELS_DATARATE;
-	  mib.Param.ChannelsDatarate = new_dr;
-	  status = LoRaMacMibSetRequestConfirm(&mib);
-	  CHECK_STATUS(status);
-  }
-  else {
-	  // Uses MIB_CHANNELS_DEFAULT_DATARATE to test for TX possible with non ADR
-	  mib.Type = MIB_CHANNELS_DEFAULT_DATARATE;
-	  mib.Param.ChannelsDatarate = new_dr;
-	  status = LoRaMacMibSetRequestConfirm(&mib);
-	  CHECK_STATUS(status);
 	  // Set lora_config reference
 	  lora_config_data_rate_set((int8_t)new_dr);
   }
