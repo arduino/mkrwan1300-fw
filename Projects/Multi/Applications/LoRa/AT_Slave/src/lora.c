@@ -654,20 +654,17 @@ LoRaMacStatus_t lora_join(void)
  */
 LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary, unsigned raw)
 {
+  if (raw == 1)
+	  goto on_raw;
+
   uint32_t appport;
 
-  if (raw == 1) {
-	  goto on_raw;
-  }
   /* read and set the application port */
   if (1 != tiny_sscanf(buf, "%u:", &appport))
   {
     PRINTF("AT+SEND without the application port");
     return LORAMAC_STATUS_PARAMETER_INVALID;
   }
-  
-  /* set the application port to send to */
-  lora_config_application_port_set(appport);
 
   /* skip the application port */
   while (('0' <= buf[0]) && (buf[0] <= '9'))
@@ -682,7 +679,10 @@ LoRaMacStatus_t lora_send(const char *buf, unsigned bufSize, unsigned binary, un
   }
   buf ++;
   bufSize --;
-  
+
+  /* set the application port to send to */
+  lora_config_application_port_set(appport);
+
 on_raw:
   OnSendEvent();
 
