@@ -609,7 +609,7 @@ ATEerror_t at_Rx2Frequency_get(const char *param)
   status = LoRaMacMibGetRequestConfirm(&mib);
   CHECK_STATUS(status);
   AT_PRINTF(AT_RX2FQ AT_EQ);
-  print_d(mib.Param.Rx2Channel.Frequency);
+  print_u(mib.Param.Rx2Channel.Frequency);
 
   return AT_OK;
 }
