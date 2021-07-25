@@ -68,7 +68,7 @@
  * @brief Max size of the data that can be received
  */
 #define MAX_RECEIVED_DATA 255
-#define MAX_SEND_DATA	242		// LoRaWan spec 1.0.4
+#define MAX_SEND_DATA	484		// LoRaWan spec 1.0.4 = 242*2 (used for binary send HEX chars)
 
 /* Private macro -------------------------------------------------------------*/
 /**
@@ -1011,7 +1011,8 @@ ATEerror_t at_SendV2(const char *param)
 
   size_t length = 0;
 
-  if (tiny_sscanf(param, "%hhu", &length) != 1)
+  if (tiny_sscanf(param, "%hu", &length) != 1
+		  || length > MAX_SEND_DATA)
   {
     return AT_PARAM_ERROR;
   }
@@ -1038,7 +1039,8 @@ ATEerror_t at_SendV2Confirmation(const char *param)
 
   size_t length = 0;
 
-  if (tiny_sscanf(param, "%hhu", &length) != 1)
+  if (tiny_sscanf(param, "%hu", &length) != 1
+		  || length > MAX_SEND_DATA)
   {
 	return AT_PARAM_ERROR;
   }
