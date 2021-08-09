@@ -59,7 +59,7 @@
 									<listOptionValue builtIn="false" value="NO_MAC_PRINTF"/>
 									<listOptionValue builtIn="false" value="REGION_EU868"/>
 									<listOptionValue builtIn="false" value="REGION_AS923"/>
-									<listOptionValue builtIn="false" value="REGION_AU915"/>
+									<listOptionValue builtIn="true" value="REGION_AU915"/>
 									<listOptionValue builtIn="false" value="REGION_CN470"/>
 									<listOptionValue builtIn="false" value="REGION_CN779"/>
 									<listOptionValue builtIn="false" value="REGION_EU433"/>
