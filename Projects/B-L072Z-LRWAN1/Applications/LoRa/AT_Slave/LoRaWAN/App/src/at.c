@@ -456,14 +456,79 @@ ATEerror_t at_NwkSKey_set(const char *param)
   LoRaMacStatus_t status;
   uint8_t NwkSKey[16];
 
-  mib.Type = MIB_NWK_S_ENC_KEY;
-
   if (sscanf_16_hhx(param, NwkSKey) != 16)
   {
     return AT_PARAM_ERROR;
   }
 
+  mib.Type = MIB_NWK_S_ENC_KEY;
   mib.Param.NwkSEncKey = NwkSKey;
+  status = LoRaMacMibSetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+
+  return AT_OK;
+}
+
+
+ATEerror_t at_FNwkSKey_get(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+
+  mib.Type = MIB_F_NWK_S_INT_KEY;
+  status = LoRaMacMibGetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+  print_16_02x(mib.Param.FNwkSIntKey);
+
+  return AT_OK;
+}
+
+ATEerror_t at_FNwkSKey_set(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+  uint8_t FNwkSKey[16];
+
+  if (sscanf_16_hhx(param, FNwkSKey) != 16)
+  {
+    return AT_PARAM_ERROR;
+  }
+
+  mib.Type = MIB_F_NWK_S_INT_KEY;
+  mib.Param.FNwkSIntKey = FNwkSKey;
+  status = LoRaMacMibSetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+
+  return AT_OK;
+}
+
+
+ATEerror_t at_SNwkSKey_get(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+
+  mib.Type = MIB_S_NWK_S_INT_KEY;
+  status = LoRaMacMibGetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+  print_16_02x(mib.Param.SNwkSIntKey);
+
+  return AT_OK;
+}
+
+ATEerror_t at_SNwkSKey_set(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+  uint8_t SNwkSKey[16];
+
+  if (sscanf_16_hhx(param, SNwkSKey) != 16)
+  {
+    return AT_PARAM_ERROR;
+  }
+
+  mib.Type = MIB_S_NWK_S_INT_KEY;
+  mib.Param.SNwkSIntKey = SNwkSKey;
   status = LoRaMacMibSetRequestConfirm(&mib);
   CHECK_STATUS(status);
 
@@ -1454,6 +1519,78 @@ ATEerror_t at_test_stop(const char *param)
 {
   return TST_stop();
 }
+
+ATEerror_t at_ChannelMask_get(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+
+  mib.Type = MIB_CHANNELS_MASK;
+  status = LoRaMacMibGetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+  AT_PRINTF("%04x%04x%04x%04x%04x%04x\r\n",
+          mib.Param.ChannelsMask[0], mib.Param.ChannelsMask[1], mib.Param.ChannelsMask[2], mib.Param.ChannelsMask[3],
+     mib.Param.ChannelsMask[4], mib.Param.ChannelsMask[5]);
+
+  return AT_OK;
+}
+
+ATEerror_t at_ChannelMask_set(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+  uint16_t channelsMask[6];
+  mib.Type = MIB_CHANNELS_MASK;
+  mib.Param.ChannelsMask = channelsMask;
+  if (tiny_sscanf(param, "%04hx%04hx%04hx%04hx%04hx%04hx",
+                  &channelsMask[0], &channelsMask[1], &channelsMask[2], &channelsMask[3],
+                  &channelsMask[4], &channelsMask[5]) != 6)
+  {
+    return AT_PARAM_ERROR;
+  }
+  status = LoRaMacMibSetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+
+  return AT_OK;
+}
+
+ATEerror_t at_ChannelDefaultMask_get(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+
+  mib.Type = MIB_CHANNELS_DEFAULT_MASK;
+  status = LoRaMacMibGetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+  AT_PRINTF("%04x%04x%04x%04x%04x%04x\r\n",
+          mib.Param.ChannelsDefaultMask[0], mib.Param.ChannelsDefaultMask[1], mib.Param.ChannelsDefaultMask[2], mib.Param.ChannelsDefaultMask[3],
+     mib.Param.ChannelsDefaultMask[4], mib.Param.ChannelsDefaultMask[5]);
+
+  return AT_OK;
+}
+
+ATEerror_t at_ChannelDefaultMask_set(const char *param)
+{
+  MibRequestConfirm_t mib;
+  LoRaMacStatus_t status;
+  uint16_t channelDefaultMask[6];
+  mib.Type = MIB_CHANNELS_DEFAULT_MASK;
+  mib.Param.ChannelsDefaultMask = channelDefaultMask;
+  if (tiny_sscanf(param, "%04hx%04hx%04hx%04hx%04hx%04hx",
+                  &channelDefaultMask[0], &channelDefaultMask[1], &channelDefaultMask[2], &channelDefaultMask[3],
+                  &channelDefaultMask[4], &channelDefaultMask[5]) != 6)
+  {
+    return AT_PARAM_ERROR;
+  }
+
+  status = LoRaMacMibSetRequestConfirm(&mib);
+  CHECK_STATUS(status);
+
+  return AT_OK;
+}
+
+
+
 /* Private functions ---------------------------------------------------------*/
 
 static ATEerror_t translate_status(LoRaMacStatus_t status)

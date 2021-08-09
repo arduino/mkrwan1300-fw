@@ -56,15 +56,15 @@ struct ATCommand_s
  */
 static const char *const ATError_description[] =
 {
-  "\r\nOK\r\n",                     /* AT_OK */
-  "\r\nAT_ERROR\r\n",               /* AT_ERROR */
-  "\r\nAT_PARAM_ERROR\r\n",         /* AT_PARAM_ERROR */
-  "\r\nAT_BUSY_ERROR\r\n",          /* AT_BUSY_ERROR */
-  "\r\nAT_TEST_PARAM_OVERFLOW\r\n", /* AT_TEST_PARAM_OVERFLOW */
-  "\r\nAT_NO_NETWORK_JOINED\r\n",   /* AT_NO_NET_JOINED */
-  "\r\nAT_RX_ERROR\r\n",            /* AT_RX_ERROR */
-  "\r\nAT_NO_CLASS_B_ENABLE\r\n",  /* AT_NO_CLASS_B_ENABLE */
-  "\r\nerror unknown\r\n",          /* AT_MAX */
+  "+OK\r\n",                     /* AT_OK */
+  "+ERROR\r\n",               /* AT_ERROR */
+  "+PARAM_ERROR\r\n",         /* AT_PARAM_ERROR */
+  "+ERR_BUSY\r\n",          /* AT_BUSY_ERROR */
+  "+ERR_PARAM_OVERFLOW\r\n", /* AT_TEST_PARAM_OVERFLOW */
+  "+ERR_NO_NETWORK\r\n",   /* AT_NO_NET_JOINED */
+  "+ERR_RX\r\n",            /* AT_RX_ERROR */
+  "+ERR_NO_CLASS_B_ENABLE\r\n",  /* AT_NO_CLASS_B_ENABLE */
+  "+ERR_UNKNOWN\r\n",          /* AT_MAX */
 };
 
 /**
@@ -144,6 +144,32 @@ static const struct ATCommand_s ATCommand[] =
 #endif
     .get = at_return_error,
     .set = at_NwkSKey_set,
+    .run = at_return_error,
+  },
+#endif
+
+#ifndef NO_KEY_ADDR_EUI
+  {
+    .string = AT_FNWKSKEY,
+    .size_string = sizeof(AT_FNWKSKEY) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_FNWKSKEY ": Set the Forwarding Network Session Integrity Key\r\n",
+#endif
+    .get = at_return_error,
+    .set = at_FNwkSKey_set,
+    .run = at_return_error,
+  },
+#endif
+
+#ifndef NO_KEY_ADDR_EUI
+  {
+    .string = AT_SNWKSKEY,
+    .size_string = sizeof(AT_SNWKSKEY) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_SNWKSKEY ": Set the Serving Network Session Integrity Key\r\n",
+#endif
+    .get = at_return_error,
+    .set = at_SNwkSKey_set,
     .run = at_return_error,
   },
 #endif
@@ -535,6 +561,28 @@ static const struct ATCommand_s ATCommand[] =
     .run = at_Certif,
   },
 
+  {
+    .string = AT_CHANMASK,
+    .size_string = sizeof(AT_CHANMASK) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_CHANMASK ": Config the region's channel mask for the session\r\n",
+#endif
+    .get = at_ChannelMask_get,
+    .set = at_ChannelMask_set,
+    .run = at_return_error,
+  },
+
+  {
+    .string = AT_CHANDEFMASK,
+    .size_string = sizeof(AT_CHANDEFMASK) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_CHANDEFMASK ": Config the region's channel default mask for the session\r\n",
+#endif
+    .get = at_ChannelDefaultMask_get,
+    .set = at_ChannelDefaultMask_set,
+    .run = at_return_error,
+  },
+
 #ifdef LORAMAC_CLASSB_ENABLED
   {
     .string = AT_PGSLOT,
@@ -678,7 +726,7 @@ void CMD_Process(void)
       com_error(AT_RX_ERROR);
       i = 0;
     }
-    else if ((circBuffer[ridx] == '\r') || (circBuffer[ridx] == '\n'))
+    else if (circBuffer[ridx] == '\n')
     {
       ridx++;
       if (ridx == CIRC_BUFF_SIZE)

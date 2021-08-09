@@ -111,6 +111,11 @@
 			<location>PARENT-7-PROJECT_LOC/Middlewares/Third_Party/LoRaWAN/Mac/region/RegionAU915.c</location>
 		</link>
     <link>
+			<name>Middlewares/LoRaWAN/Mac/Regions/RegionAU915_TTN.c</name>
+			<type>1</type>
+			<location>PARENT-7-PROJECT_LOC/Middlewares/Third_Party/LoRaWAN/Mac/region/RegionAU915_TTN.c</location>
+		</link>
+    <link>
 			<name>Middlewares/LoRaWAN/Mac/LoRaMacClassB.c</name>
 			<type>1</type>
 			<location>PARENT-7-PROJECT_LOC/Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacClassB.c</location>
