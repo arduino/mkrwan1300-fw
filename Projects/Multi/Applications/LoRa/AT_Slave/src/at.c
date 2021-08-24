@@ -60,6 +60,7 @@
 #include "version.h"
 #include "hw_msp.h"
 #include "test_rf.h"
+#include "command.h"
 
 /* External variables --------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
@@ -84,6 +85,10 @@
  * @brief Buffer that contains the last received data
  */
 static char ReceivedData[MAX_RECEIVED_DATA];
+/**
+ * @brief Buffer that contains the last send buffer
+ */
+static char SendData[MAX_SEND_DATA];
 
 /**
  * @brief Size if the buffer that contains the last received data
@@ -960,7 +965,7 @@ ATEerror_t at_ReceiveBinary(const char *param)
   unsigned i;
 
   AT_PRINTF(AT_RECVB AT_EQ);
-  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize);
+  AT_PRINTF("%u,%u\r\n\n", ReceivedDataPort, ReceivedDataSize);
 
   for (i = 0; i < ReceivedDataSize; i++)
   {
@@ -983,7 +988,7 @@ ATEerror_t at_Receive(const char *param)
   if (format_send_v2==0)
   {
 	  AT_PRINTF(AT_RECV AT_EQ);
-	  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize);
+	  AT_PRINTF("%u,%u\r\n\n", ReceivedDataPort, ReceivedDataSize);
 	  for (unsigned i = 0; i < ReceivedDataSize; i++)
 	  {
 		AT_PRINTF("%c", ReceivedData[i]);
@@ -992,7 +997,7 @@ ATEerror_t at_Receive(const char *param)
   else
   {
 	  AT_PRINTF(AT_RECVB AT_EQ);
-	  AT_PRINTF("%d,%d\r\n\n", ReceivedDataPort, ReceivedDataSize*2);
+	  AT_PRINTF("%u,%u\r\n\n", ReceivedDataPort, ReceivedDataSize*2);
 	  for (unsigned i = 0; i < ReceivedDataSize; i++)
 	  {
 	    AT_PRINTF("%02x", ReceivedData[i]);
@@ -1004,60 +1009,48 @@ ATEerror_t at_Receive(const char *param)
   return AT_OK;
 }
 
-ATEerror_t at_SendV2(const char *param)
+ATEerror_t at_SendV2_main(const char *param)
 {
   LoRaMacStatus_t status;
-  at_ack_set("0");
 
   size_t length = 0;
 
-  if (tiny_sscanf(param, "%hu", &length) != 1
+  if (tiny_sscanf(param, "%u", &length) != 1
 		  || length > MAX_SEND_DATA)
   {
     return AT_PARAM_ERROR;
   }
-  uint8_t data[MAX_SEND_DATA];
   int i = 0;
   // grab other #len bytes from the serial buffer
   while (i<length) {
 	if (IsNewCharReceived() == SET) {
-		data[i] = GetNewChar();
+		SendData[i] = GetNewChar();
+	    if (SendData[i] == AT_ERROR_RX_CHAR)
+	    {
+	      return AT_RX_ERROR;
+	    }
 		i++;
     }
   }
 
-  status = lora_send(data, length, format_send_v2, 1);
+  status = lora_send(SendData, length, format_send_v2, 1);
   CHECK_STATUS(status);
 
   return AT_OK;
 }
 
+ATEerror_t at_SendV2(const char *param)
+{
+  at_ack_set("0");
+
+  return at_SendV2_main(param);
+}
+
 ATEerror_t at_SendV2Confirmation(const char *param)
 {
-  LoRaMacStatus_t status;
   at_ack_set("1");
 
-  size_t length = 0;
-
-  if (tiny_sscanf(param, "%hu", &length) != 1
-		  || length > MAX_SEND_DATA)
-  {
-	return AT_PARAM_ERROR;
-  }
-  uint8_t data[MAX_SEND_DATA];
-  int i = 0;
-  // grab other #len bytes from the serial buffer
-  while (i<length) {
-	if (IsNewCharReceived() == SET) {
-		data[i] = GetNewChar();
-		i++;
-    }
-  }
-
-  status = lora_send(data, length, format_send_v2, 1);
-  CHECK_STATUS(status);
-
-  return AT_OK;
+  return at_SendV2_main(param);
 }
 
 ATEerror_t at_Port_get(const char *param)
