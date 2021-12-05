@@ -33,6 +33,12 @@ docker run -rm -v "$PWD":/home arm-eabi-mkr
 ```
 The `-rm` option removes the container after execution, while `-v` sets the directory mapping from `$PWD`, i.e., local directory, to `/home` inside the container.
 
+The file `fw.h` contains now the new firmware to be flashed, e.g., with the standalone sketch in the MKRWAN library. Just replace the included file and run the sketch on your device.
+
+## Backwards compatibility
+
+Starting from FW 1.2.4, the modem responds to value requests with the command followed by the value, e.g., `+FCU=3` instead of `+OK=3`.  Thus, to use newer firmware, you need to use a compatible, recent library. 
+
 ## AT Command List
 
 | Command      | Description
