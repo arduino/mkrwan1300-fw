@@ -297,7 +297,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
   CMD_Init();
-  PRINTF(AT_EVENT AT_EQ "0,0");
+  PRINTF(AT_EVENT AT_EQ "0,0\r");
   /* USER CODE END 1 */
 
   /* Configure the Lora Stack*/
