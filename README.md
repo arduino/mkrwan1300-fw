@@ -4,11 +4,34 @@ This package contains the firmware for Murata CMWX1ZZABZ-078 module.
 
 It is derived from [I-CUBE-LRWAN](http://www.st.com/en/embedded-software/i-cube-lrwan.html), with some new APIs (like the ability to switch band at runtime, not only at compile time).
 
-The project is provided a [System Workbench for STM32](http://www.openstm32.org/System%2BWorkbench%2Bfor%2BSTM32) project, but can also be compiled in Eclipse after following [this](http://www.openstm32.org/Installing%2BSystem%2BWorkbench%2Bfor%2BSTM32%2Bfrom%2BEclipse#Important_note_about_your_MAC_OSX_host_version) guide
-
 [Releases](https://github.com/bcmi-labs/mkrwan1300-fw/releases) contains the precompiled firmware that can be uploaded either using FWUpdaterBridge or MKRWANFWUpdate_standalone examples from in https://github.com/arduino-libraries/MKRWAN
 
 All the code maintains its original license.
+
+## Compiling the code 
+The project is provided a [System Workbench for STM32](http://www.openstm32.org/System%2BWorkbench%2Bfor%2BSTM32) project, but can also be compiled in Eclipse after following [this](http://www.openstm32.org/Installing%2BSystem%2BWorkbench%2Bfor%2BSTM32%2Bfrom%2BEclipse#Important_note_about_your_MAC_OSX_host_version) guide. A third alternative is using Docker containers. Enter the following in a file called `Dockerfile`
+
+```
+FROM stronglytyped/arm-none-eabi-gcc:latest
+
+#Buildkit for hex file
+RUN apt-get update && \
+	apt install -y xxd \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /home
+CMD ["make", "-B"]
+```
+Then you create the new container image by running the build in the directory with `Dockerfile`. Let's name the image `arm-eabi-mkr`.
+```
+docker build . -t arm-eabi-mkr
+```
+Once you built the Docker image you can use the _Docker tooling_ add-on in Eclipse to build the firmware. Open the source code as CDT project and set the build container to `arm-eabi-mkr` in _Properties>C/C++ Build>Settings_.
+Alternatively, enter the source directory and run a container mapping the source directory to home as follows:
+```
+docker run -rm -v "$PWD":/home arm-eabi-mkr 
+```
+The `-rm` option removes the container after execution, while `-v` sets the directory mapping from `$PWD`, i.e., local directory, to `/home` inside the container.
 
 ## AT Command List
 
