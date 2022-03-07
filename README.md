@@ -29,7 +29,7 @@ docker build . -t arm-eabi-mkr
 Once you built the Docker image you can use the _Docker tooling_ add-on in Eclipse to build the firmware. Open the source code as CDT project and set the build container to `arm-eabi-mkr` in _Properties>C/C++ Build>Settings_.
 Alternatively, enter the source directory and run a container mapping the source directory to home as follows:
 ```
-docker run -rm -v "$PWD":/home arm-eabi-mkr 
+docker run --rm -v "$PWD":/home arm-eabi-mkr 
 ```
 The `-rm` option removes the container after execution, while `-v` sets the directory mapping from `$PWD`, i.e., local directory, to `/home` inside the container.
 
