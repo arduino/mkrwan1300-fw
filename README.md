@@ -4,11 +4,40 @@ This package contains the firmware for Murata CMWX1ZZABZ-078 module.
 
 It is derived from [I-CUBE-LRWAN](http://www.st.com/en/embedded-software/i-cube-lrwan.html), with some new APIs (like the ability to switch band at runtime, not only at compile time).
 
-The project is provided a [System Workbench for STM32](http://www.openstm32.org/System%2BWorkbench%2Bfor%2BSTM32) project, but can also be compiled in Eclipse after following [this](http://www.openstm32.org/Installing%2BSystem%2BWorkbench%2Bfor%2BSTM32%2Bfrom%2BEclipse#Important_note_about_your_MAC_OSX_host_version) guide
-
 [Releases](https://github.com/bcmi-labs/mkrwan1300-fw/releases) contains the precompiled firmware that can be uploaded either using FWUpdaterBridge or MKRWANFWUpdate_standalone examples from in https://github.com/arduino-libraries/MKRWAN
 
 All the code maintains its original license.
+
+## Compiling the code 
+The project is provided a [System Workbench for STM32](http://www.openstm32.org/System%2BWorkbench%2Bfor%2BSTM32) project, but can also be compiled in Eclipse after following [this](http://www.openstm32.org/Installing%2BSystem%2BWorkbench%2Bfor%2BSTM32%2Bfrom%2BEclipse#Important_note_about_your_MAC_OSX_host_version) guide. A third alternative is using Docker containers. Enter the following in a file called `Dockerfile`
+
+```
+FROM stronglytyped/arm-none-eabi-gcc:latest
+
+#Buildkit for hex file
+RUN apt-get update && \
+	apt install -y xxd \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /home
+CMD ["make", "-B"]
+```
+Then you create the new container image by running the build in the directory with `Dockerfile`. Let's name the image `arm-eabi-mkr`.
+```
+docker build . -t arm-eabi-mkr
+```
+Once you built the Docker image you can use the _Docker tooling_ add-on in Eclipse to build the firmware. Open the source code as CDT project and set the build container to `arm-eabi-mkr` in _Properties>C/C++ Build>Settings_.
+Alternatively, enter the source directory and run a container mapping the source directory to home as follows:
+```
+docker run --rm -v "$PWD":/home arm-eabi-mkr 
+```
+The `-rm` option removes the container after execution, while `-v` sets the directory mapping from `$PWD`, i.e., local directory, to `/home` inside the container.
+
+The file `fw.h` contains now the new firmware to be flashed, e.g., with the standalone sketch in the MKRWAN library. Just replace the included file and run the sketch on your device.
+
+## Backwards compatibility
+
+Starting from FW 1.2.4, the modem responds to value requests with the command followed by the value, e.g., `+FCU=3` instead of `+OK=3`.  Thus, to use newer firmware, you need to use a compatible, recent library. 
 
 ## AT Command List
 
@@ -23,13 +52,15 @@ All the code maintains its original license.
 | AT+CERTIF    | Set the module in LoraWan Certification Mode |
 | AT+CFM       | Get or Set the confirmation mode (0-1) |
 | AT+CFS       | Get confirmation status of the last AT+SEND (0-1) |
+| AT+CHANMASK  | Gets the current region's channel mask, note this is reset when changing regions |
+| AT+CHANDEFMASK | Gets the current region's default mask, note this is reset when changing regions |  |
 | AT+CLASS     | Get or Set the Device Class |
 | AT+CTX       | send with confirmation |
 | AT+DEV       | Get the version of the AT_Slave FW |
 | AT+DEVADDR   | Get or Set the Device address |
 | AT+DEVEUI    | Get the Device EUI |
 | AT+DFORMAT   | select hex or binary format |
-| AT+DR        | Get or Set the Data Rate. (0-7 corresponding to DR_X) |
+| AT+DR        | Get or Set the Data Rate. (0-7 corresponding to DR_X). If ADR is off, it sets also the default data rate |
 | AT+DUTYCYCLE | Get or Set the ETSI Duty Cycle setting - 0=disable, 1=enable - Only for testing |
 | AT+FCD       | Get or Set the Frame Counter Downlink |
 | AT+FCU       | Get or Set the Frame Counter Uplink |
@@ -38,6 +69,7 @@ All the code maintains its original license.
 | AT+JN2DL     | Get or Set the Join Accept Delay between the end of the Tx and the Join Rx Window 2 in ms |
 | AT+JOIN      | Join network |
 | AT+MODE      | Get or Set the Network Join Mode. (0: ABP, 1: OTAA) |
+| AT+MSIZE     | Get the maximum send/receive size for the actual data rate |
 | AT+NJS       | Get the join status |
 | AT+NWK       | Get or Set the public network mode. (0: off, 1: on) |
 | AT+NWKSKEY   | Get or Set the Network Session Key |
@@ -62,5 +94,3 @@ All the code maintains its original license.
 | AT+TTONE     | Starts RF Tone test |
 | AT+UTX       | send without confirmation |
 | AT+VER       | Get the version of the AT_Slave FW|
-| AT+CHANMASK  | Gets the current region's channel mask, note this is reset when changing regions |
-| AT+CHANDEFMASK | Gets the current region's default mask, note this is reset when changing regions |  |

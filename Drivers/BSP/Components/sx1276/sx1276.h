@@ -53,6 +53,7 @@ Maintainer: Miguel Luis and Gregory Cristian
 
 #include "sx1276Regs-Fsk.h"
 #include "sx1276Regs-LoRa.h"
+#include "radio.h"
 
 /*!
  * Radio wake-up time from sleep
@@ -270,6 +271,11 @@ void SX1276BoardInit( LoRaBoardCallback_t *callbacks );
  * \param [OUT] returns the wake up time of the radio and associated board
  */
 uint32_t SX1276Init( RadioEvents_t *events );
+
+/*!
+ * \brief Resets the SX1276
+ */
+void SX1276Reset( void );
 
 /*!
  * \brief Sets the SX1276 operating mode

@@ -66,7 +66,7 @@ Maintainer: Miguel Luis, Gregory Cristian and Wael Guibene
 #include "version.h"
 #include "command.h"
 #include "at.h"
-#include "lora.h"
+#include "sx1276.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -297,7 +297,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
   CMD_Init();
-  PRINTF("+EVENT=0,0");
+  PRINTF(AT_EVENT AT_EQ "0,0\r");
   /* USER CODE END 1 */
 
   /* Configure the Lora Stack*/

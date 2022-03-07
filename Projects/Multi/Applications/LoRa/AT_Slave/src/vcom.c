@@ -341,7 +341,7 @@ void vcom_IRQHandler(void)
 
   if (LL_LPUART_IsActiveFlag_PE(UARTX) || LL_LPUART_IsActiveFlag_FE(UARTX) || LL_LPUART_IsActiveFlag_ORE(UARTX) || LL_LPUART_IsActiveFlag_NE(UARTX))
   {
-    PRINTF("Error when receiving\n");
+    // PRINTF("Error when receiving\n"); Using return code
     /* clear error IT */
     LL_LPUART_ClearFlag_PE(UARTX);
     LL_LPUART_ClearFlag_FE(UARTX);
